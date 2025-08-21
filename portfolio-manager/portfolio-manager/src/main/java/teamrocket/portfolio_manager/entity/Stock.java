@@ -3,9 +3,11 @@ package teamrocket.portfolio_manager.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 import javax.annotation.processing.Generated;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 public class Stock {
@@ -16,6 +18,12 @@ public class Stock {
     private String stockName;
     private String currency;
     private BigDecimal currentPrice;
+
+    @OneToMany(mappedBy = "stock")
+    private List<StockTransaction> stockTransactions;
+
+    @OneToMany(mappedBy = "stock")
+    private List<StockHistory> stockHistory;
 
     public Stock() {}
     public Stock(String stockSymbol, String stockName, String currency, BigDecimal currentPrice) {
@@ -28,19 +36,15 @@ public class Stock {
     public int getId() {
         return id;
     }
-
     public String getStockSymbol() {
         return stockSymbol;
     }
-
     public String getStockName() {
         return stockName;
     }
-
     public String getCurrency() {
         return currency;
     }
-
     public BigDecimal getCurrentPrice() {
         return currentPrice;
     }
