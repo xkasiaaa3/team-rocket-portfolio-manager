@@ -1,5 +1,51 @@
 package teamrocket.portfolio_manager.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+import javax.annotation.processing.Generated;
+import java.math.BigDecimal;
+
 @Entity
 public class Stock {
+    @Id
+    @GeneratedValue
+    private int id;
+    private String stockSymbol;
+    private String stockName;
+    private String currency;
+    private BigDecimal currentPrice;
+
+    public Stock() {}
+    public Stock(String stockSymbol, String stockName, String currency, BigDecimal currentPrice) {
+        this.stockSymbol = stockSymbol;
+        this.stockName = stockName;
+        this.currency = currency;
+        this.currentPrice = currentPrice;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getStockSymbol() {
+        return stockSymbol;
+    }
+
+    public String getStockName() {
+        return stockName;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public BigDecimal getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(BigDecimal currentPrice) {
+        this.currentPrice = currentPrice;
+    }
 }
