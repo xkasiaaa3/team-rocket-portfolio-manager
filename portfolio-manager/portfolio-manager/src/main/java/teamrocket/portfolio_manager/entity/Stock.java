@@ -1,9 +1,6 @@
 package teamrocket.portfolio_manager.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import javax.annotation.processing.Generated;
 import java.math.BigDecimal;
@@ -19,10 +16,10 @@ public class Stock {
     private String currency;
     private BigDecimal currentPrice;
 
-    @OneToMany(mappedBy = "stock")
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<StockTransaction> stockTransactions;
 
-    @OneToMany(mappedBy = "stock")
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<StockHistory> stockHistory;
 
     public Stock() {}
