@@ -10,16 +10,16 @@ import java.util.List;
 public class Stock {
     @Id
     @GeneratedValue
-    private int id;
+    private Integer id;
     private String stockSymbol;
     private String stockName;
     private String currency;
     private BigDecimal currentPrice;
 
-    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "stockId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<StockTransaction> stockTransactions;
 
-    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "stockId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<StockHistory> stockHistory;
 
     public Stock() {}

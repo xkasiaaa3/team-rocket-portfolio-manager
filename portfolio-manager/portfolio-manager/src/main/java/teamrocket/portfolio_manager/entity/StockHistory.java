@@ -11,9 +11,29 @@ import java.util.Date;
 public class StockHistory {
     @Id
     @GeneratedValue
-    int id;
-    Date date;
-    BigDecimal price;
+    private Integer id;
+    private Integer stockId;
+    private Date date;
+    private BigDecimal price;
 
+    public StockHistory(Integer id, Date date, BigDecimal price) {
+        this.id = id;
+        this.date = date;
+        this.price = price;
+    }
 
+    public StockHistory() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
 }
