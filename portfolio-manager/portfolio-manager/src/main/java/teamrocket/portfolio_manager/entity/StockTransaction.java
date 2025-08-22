@@ -44,4 +44,7 @@ public class StockTransaction {
         return action;
     }
 
+    public Integer getStockId() {
+        return stockId;
+    }
 }
