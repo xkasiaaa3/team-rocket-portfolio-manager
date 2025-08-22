@@ -4,18 +4,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
+import teamrocket.portfolio_manager.entity.Portfolio;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
 import teamrocket.portfolio_manager.exception.NotEnoughStocksException;
 import teamrocket.portfolio_manager.model.Action;
+import teamrocket.portfolio_manager.repository.PortfolioRepository;
 import teamrocket.portfolio_manager.repository.StockRepository;
 import teamrocket.portfolio_manager.repository.StockTransactionRepository;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,13 +25,17 @@ public class PortfolioServiceTests {
 
     private StockRepository stockRepository;
     private StockTransactionRepository stockTransactionRepository;
+    private PortfolioRepository portfolioRepository;
     private PortfolioService portfolioService;
 
     @BeforeEach
     void setUp() {
         stockRepository = Mockito.mock(StockRepository.class);
         stockTransactionRepository = Mockito.mock(StockTransactionRepository.class);
-        portfolioService = new PortfolioService(stockRepository, stockTransactionRepository);
+        portfolioRepository = Mockito.mock(PortfolioRepository.class);
+        portfolioService = new PortfolioService(stockRepository, stockTransactionRepository, portfolioRepository);
+
+        // NEED TO CREATE PORTFOLIO BEFORE TESTING
 
         when(stockTransactionRepository.save(any(StockTransaction.class))).thenAnswer(AdditionalAnswers.returnsFirstArg());
     }
@@ -42,7 +45,7 @@ public class PortfolioServiceTests {
         Stock stock = new Stock(1, "AUL", "Aula super stock", "USD", BigDecimal.valueOf(550));
         when(stockRepository.findById(stock.getId())).thenReturn(Optional.of(stock));
 
-        StockTransaction stockTransaction = portfolioService.buyStock(stock.getId(), BigDecimal.valueOf(5));
+        StockTransaction stockTransaction = portfolioService.buyStock(stock.getId(), 1, BigDecimal.valueOf(5));
 
         assertEquals(BigDecimal.valueOf(5), stockTransaction.getAmount());
         assertEquals(stock.getId(), stockTransaction.getStockId());
@@ -55,10 +58,10 @@ public class PortfolioServiceTests {
     void sellStock() {
         Stock stock = new Stock(1, "AUL", "Aula super stock", "USD", BigDecimal.valueOf(550));
         when(stockRepository.findById(stock.getId())).thenReturn(Optional.of(stock));
-        StockTransaction boughtTransaction = new StockTransaction(stock.getId(), new Date(), BigDecimal.valueOf(5), Action.BUYING, BigDecimal.valueOf(550));
+        StockTransaction boughtTransaction = new StockTransaction(stock.getId(), 1, new Date(), BigDecimal.valueOf(5), Action.BUYING, BigDecimal.valueOf(550));
         when(stockTransactionRepository.findAllByStockId(stock.getId())).thenReturn(List.of(boughtTransaction));
 
-        StockTransaction stockTransaction = portfolioService.sellStock(stock.getId(), BigDecimal.valueOf(3));
+        StockTransaction stockTransaction = portfolioService.sellStock(stock.getId(), 1, BigDecimal.valueOf(3));
 
         assertEquals(BigDecimal.valueOf(3), stockTransaction.getAmount());
         assertEquals(stock.getId(), stockTransaction.getStockId());
@@ -70,11 +73,11 @@ public class PortfolioServiceTests {
     void notEnoughStockToSell() {
         Stock stock = new Stock(1, "AUL", "Aula super stock", "USD", BigDecimal.valueOf(550));
         when(stockRepository.findById(stock.getId())).thenReturn(Optional.of(stock));
-        StockTransaction boughtTransaction = new StockTransaction(stock.getId(), new Date(), BigDecimal.valueOf(5), Action.BUYING, BigDecimal.valueOf(550));
-        StockTransaction soldTransaction = new StockTransaction(stock.getId(), new Date(), BigDecimal.valueOf(3), Action.SELLING, BigDecimal.valueOf(550));
+        StockTransaction boughtTransaction = new StockTransaction(stock.getId(), 1, new Date(), BigDecimal.valueOf(5), Action.BUYING, BigDecimal.valueOf(550));
+        StockTransaction soldTransaction = new StockTransaction(stock.getId(), 1, new Date(), BigDecimal.valueOf(3), Action.SELLING, BigDecimal.valueOf(550));
 
         when(stockTransactionRepository.findAllByStockId(stock.getId())).thenReturn(List.of(boughtTransaction,soldTransaction));
 
-        assertThrows(NotEnoughStocksException.class, () -> portfolioService.sellStock(stock.getId(), BigDecimal.valueOf(4)));
+        assertThrows(NotEnoughStocksException.class, () -> portfolioService.sellStock(stock.getId(), 1, BigDecimal.valueOf(4)));
     }
 }

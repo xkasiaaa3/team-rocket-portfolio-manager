@@ -1,9 +1,12 @@
 package teamrocket.portfolio_manager.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import teamrocket.portfolio_manager.entity.Portfolio;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
+import teamrocket.portfolio_manager.service.PortfolioService;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -14,12 +17,14 @@ import java.util.List;
 public class PortfolioController {
 
     // Inject Service class here
+    @Autowired
+    PortfolioService portfolioService;
 
     // Read
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Stock> getAllPortfolios(String stockSymbol){
-        return null;
+    public List<Portfolio> getAllPortfolios(){
+        return portfolioService.getAllPortfolios();
     }
     @GetMapping("/{portfolioId}")
     @ResponseStatus(HttpStatus.OK)
