@@ -3,6 +3,7 @@ package teamrocket.portfolio_manager.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import teamrocket.portfolio_manager.model.Action;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,8 +18,8 @@ public class StockTransaction {
     private BigDecimal amount;
     private Action action;
 
-    public StockTransaction(Integer id, Date date, BigDecimal amount, Action action) {
-        this.id = id;
+    public StockTransaction(Integer stockId, Date date, BigDecimal amount, Action action) {
+        this.stockId = stockId;
         this.date = date;
         this.amount = amount;
         this.action = action;
@@ -43,7 +44,4 @@ public class StockTransaction {
         return action;
     }
 
-    private enum Action {
-        SELLING, BUYING, PENDING
-    }
 }

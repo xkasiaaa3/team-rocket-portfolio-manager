@@ -30,6 +30,14 @@ public class Stock {
         this.currentPrice = currentPrice;
     }
 
+    public Stock(Integer id, String stockSymbol, String stockName, String currency, BigDecimal currentPrice) {
+        this.id = id;
+        this.stockSymbol = stockSymbol;
+        this.stockName = stockName;
+        this.currency = currency;
+        this.currentPrice = currentPrice;
+    }
+
     public int getId() {
         return id;
     }

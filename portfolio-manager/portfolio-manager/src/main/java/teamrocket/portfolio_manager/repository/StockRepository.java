@@ -7,5 +7,5 @@ import teamrocket.portfolio_manager.entity.Stock;
 
 @Repository
 public interface StockRepository extends JpaRepository<Stock, Integer> {
-    Stock findBySymbol(String symbol);
+    Stock findByStockSymbol(String symbol);
 }
