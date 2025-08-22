@@ -17,6 +17,8 @@ public class StockTransaction {
     private Integer id;
     @Column(nullable = false)
     private Integer stockId;
+    @Column(nullable = false)
+    private Integer portfolioId;
     private Date date;
     @Positive
     private BigDecimal amount;
@@ -28,8 +30,9 @@ public class StockTransaction {
 
     private BigDecimal actionPrice;
 
-    public StockTransaction(Integer stockId, Date date, BigDecimal amount, Action action, BigDecimal actionPrice) {
+    public StockTransaction(Integer stockId, Integer portfolioId, Date date, BigDecimal amount, Action action, BigDecimal actionPrice) {
         this.stockId = stockId;
+        this.portfolioId = portfolioId;
         this.date = date;
         this.amount = amount;
         this.action = action;
@@ -57,5 +60,9 @@ public class StockTransaction {
 
     public Integer getStockId() {
         return stockId;
+    }
+
+    public Integer getPortfolioId() {
+        return portfolioId;
     }
 }
