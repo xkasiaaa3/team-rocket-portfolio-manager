@@ -1,6 +1,7 @@
 package teamrocket.portfolio_manager.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import javax.annotation.processing.Generated;
 import java.math.BigDecimal;
@@ -11,9 +12,11 @@ public class Stock {
     @Id
     @GeneratedValue
     private Integer id;
+    @Column(unique = true,nullable = false)
     private String stockSymbol;
     private String stockName;
     private String currency;
+    @Positive
     private BigDecimal currentPrice;
 
     @OneToMany(mappedBy = "stockId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

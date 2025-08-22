@@ -1,5 +1,6 @@
 package teamrocket.portfolio_manager.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import teamrocket.portfolio_manager.entity.Stock;
@@ -14,6 +15,7 @@ import java.util.List;
 public class StockController {
 
     // Inject Service class
+    @Autowired
     StockService stockService;
 
     // Read
