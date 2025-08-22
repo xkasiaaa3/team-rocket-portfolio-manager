@@ -3,6 +3,7 @@ package teamrocket.portfolio_manager.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import teamrocket.portfolio_manager.entity.Stock;
+import teamrocket.portfolio_manager.entity.StockTransaction;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -15,6 +16,11 @@ public class PortfolioController {
     // Inject Service class here
 
     // Read
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Stock> getAllPortfolios(String stockSymbol){
+        return null;
+    }
     @GetMapping("/{portfolioId}")
     @ResponseStatus(HttpStatus.OK)
     public void getAllStockPerformancesByPortfolioId(@PathVariable int portfolioId){
@@ -24,9 +30,19 @@ public class PortfolioController {
     public BigDecimal getPortfolioBalance(String stockSymbol){
         return null;
     }
-    @GetMapping
+    @GetMapping("/transactions")
     @ResponseStatus(HttpStatus.OK)
-    public List<Stock> getAllPortfolios(String stockSymbol){
+    public List<StockTransaction> getAllStockTransactions(){
+        return null;
+    }
+    @GetMapping("/transactions/{stockSymbol}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable String stockSymbol){
+        return null;
+    }
+    @GetMapping("/owned")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Stock> getAllOwnedStocks(){
         return null;
     }
 
@@ -39,6 +55,11 @@ public class PortfolioController {
     @PutMapping("/{portfolioId}/balance")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public BigDecimal updateBalance(BigDecimal changeInBalance) {
+        return null;
+    }
+    @PostMapping("/transactions")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public StockTransaction addStockTransaction(String stockSymbol, Integer amount, String action) {
         return null;
     }
 }
