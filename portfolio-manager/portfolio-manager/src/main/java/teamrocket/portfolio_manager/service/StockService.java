@@ -25,6 +25,11 @@ public class StockService {
         return stocks;
     }
 
+    public Integer getStockId(String stockSymbol) {
+        Stock stock = stockRepository.findByStockSymbol(stockSymbol).orElseThrow(() -> new StockNotFoundException(stockSymbol));
+        return stock.getId();
+    }
+
     public List<StockHistory> getStockHistoryBySymbol(String stockSymbol) {
         Stock stock = stockRepository.findByStockSymbol(stockSymbol).orElseThrow(() -> new StockNotFoundException(stockSymbol));
 

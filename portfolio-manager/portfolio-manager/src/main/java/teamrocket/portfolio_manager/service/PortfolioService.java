@@ -43,6 +43,15 @@ public class PortfolioService {
         return portfolio.getBalance();
     }
 
+    public List<StockTransaction> getPortfolioTransactions(Integer portfolioId) {
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+        return portfolio.getStockTransactions();
+    }
+
+    public List<StockTransaction> getPortfolioTransactionsBySymbol(Integer portfolioId, Integer stockId) {
+        return stockTransactionRepository.findByPortfolioIdAndStockId(portfolioId, stockId);
+    }
+
     StockTransaction buyStock(Integer stockId, Integer portfolioId, BigDecimal amount) {
         Stock stock = stockRepository.findById(stockId).orElseThrow(() -> new StockNotFoundException(stockId));
         StockTransaction stockTransaction = stockTransactionRepository.save(

@@ -7,6 +7,7 @@ import teamrocket.portfolio_manager.entity.Portfolio;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
 import teamrocket.portfolio_manager.service.PortfolioService;
+import teamrocket.portfolio_manager.service.StockService;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,6 +20,8 @@ public class PortfolioController {
     // Inject Service class here
     @Autowired
     PortfolioService portfolioService;
+    @Autowired
+    StockService stockService;
 
     // Read
     @GetMapping
@@ -35,15 +38,16 @@ public class PortfolioController {
     public BigDecimal getPortfolioBalance(@PathVariable int portfolioId) {
         return portfolioService.getPortfolioBalance(portfolioId);
     }
-    @GetMapping("/transactions")
+    @GetMapping("/{portfolioId}/transactions")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockTransaction> getAllStockTransactions() {
-        return null;
+    public List<StockTransaction> getAllStockTransactions(@PathVariable int portfolioId) {
+        return portfolioService.getPortfolioTransactions(portfolioId);
     }
-    @GetMapping("/transactions/{stockSymbol}")
+    @GetMapping("/{portfolioId}/transactions")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable String stockSymbol) {
-        return null;
+    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable int portfolioId, @RequestParam String stockSymbol) {
+        Integer stockId = stockService.getStockId(stockSymbol);
+        return portfolioService.getPortfolioTransactionsBySymbol(portfolioId, stockId);
     }
     @GetMapping("/owned")
     @ResponseStatus(HttpStatus.OK)
