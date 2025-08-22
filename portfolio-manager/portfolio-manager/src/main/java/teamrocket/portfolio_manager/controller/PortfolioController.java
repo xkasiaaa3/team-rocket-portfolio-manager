@@ -23,31 +23,31 @@ public class PortfolioController {
     // Read
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Portfolio> getAllPortfolios(){
+    public List<Portfolio> getAllPortfolios() {
         return portfolioService.getAllPortfolios();
     }
     @GetMapping("/{portfolioId}")
     @ResponseStatus(HttpStatus.OK)
-    public void getAllStockPerformancesByPortfolioId(@PathVariable int portfolioId){
+    public void getAllStockPerformancesByPortfolioId(@PathVariable int portfolioId) {
     }
     @GetMapping("/{portfolioId}/balance")
     @ResponseStatus(HttpStatus.OK)
-    public BigDecimal getPortfolioBalance(String stockSymbol){
-        return null;
+    public BigDecimal getPortfolioBalance(@PathVariable int portfolioId) {
+        return portfolioService.getPortfolioBalance(portfolioId);
     }
     @GetMapping("/transactions")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockTransaction> getAllStockTransactions(){
+    public List<StockTransaction> getAllStockTransactions() {
         return null;
     }
     @GetMapping("/transactions/{stockSymbol}")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable String stockSymbol){
+    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable String stockSymbol) {
         return null;
     }
     @GetMapping("/owned")
     @ResponseStatus(HttpStatus.OK)
-    public List<Stock> getAllOwnedStocks(){
+    public List<Stock> getAllOwnedStocks() {
         return null;
     }
 

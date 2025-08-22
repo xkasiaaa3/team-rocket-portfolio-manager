@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 import teamrocket.portfolio_manager.entity.Portfolio;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
-import teamrocket.portfolio_manager.exception.NotEnoughStocksException;
-import teamrocket.portfolio_manager.exception.StockNotFoundException;
+import teamrocket.portfolio_manager.exception.*;
 import teamrocket.portfolio_manager.model.Action;
 import teamrocket.portfolio_manager.repository.PortfolioRepository;
 import teamrocket.portfolio_manager.repository.StockRepository;
@@ -37,6 +36,11 @@ public class PortfolioService {
 
     public List<Portfolio> getAllPortfolios() {
         return portfolioRepository.findAll();
+    }
+
+    public BigDecimal getPortfolioBalance(Integer portfolioId) {
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+        return portfolio.getBalance();
     }
 
     StockTransaction buyStock(Integer stockId, Integer portfolioId, BigDecimal amount) {
