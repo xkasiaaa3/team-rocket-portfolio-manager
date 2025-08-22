@@ -15,15 +15,11 @@ public class PortfolioController {
     // Inject Service class here
 
     // Read
-    @GetMapping
+    @GetMapping("/{portfolioId}")
     @ResponseStatus(HttpStatus.OK)
-    public void getAllStockPerformancesByPortfolioId(){
+    public void getAllStockPerformancesByPortfolioId(@PathVariable int portfolioId){
     }
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public void getStockPerformanceBySymbolByPortfolioId(String stockSymbol){
-    }
-    @GetMapping
+    @GetMapping("/{portfolioId}/balance")
     @ResponseStatus(HttpStatus.OK)
     public BigDecimal getPortfolioBalance(String stockSymbol){
         return null;
@@ -35,12 +31,12 @@ public class PortfolioController {
     }
 
     // Update
-    @PutMapping
+    @PutMapping("/date")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Date updateDate(Date newDate) {
         return null;
     }
-    @PutMapping
+    @PutMapping("/{portfolioId}/balance")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public BigDecimal updateBalance(BigDecimal changeInBalance) {
         return null;

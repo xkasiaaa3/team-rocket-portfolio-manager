@@ -20,29 +20,29 @@ public class StockController {
     public List<Stock> getAllStocks(){
         return null;
     }
-    @GetMapping
+    @GetMapping("/owned")
     @ResponseStatus(HttpStatus.OK)
     public List<Stock> getAllOwnedStocks(){
         return null;
     }
-    @GetMapping
+    @GetMapping("/history/{stockSymbol}")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockHistory> getStockHistoryBySymbol(String stockSymbol){
+    public List<StockHistory> getStockHistoryBySymbol(@PathVariable String stockSymbol){
         return null;
     }
-    @GetMapping
+    @GetMapping("/transactions")
     @ResponseStatus(HttpStatus.OK)
     public List<StockTransaction> getAllStockTransactions(){
         return null;
     }
-    @GetMapping
+    @GetMapping("/transactions/{stockSymbol}")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockTransaction> getStockTransactionsBySymbol(String stockSymbol){
+    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable String stockSymbol){
         return null;
     }
 
     // Create
-    @PostMapping
+    @PostMapping("/transactions")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public StockTransaction addStockTransaction(String stockSymbol, Integer amount, String action) {
         return null;
