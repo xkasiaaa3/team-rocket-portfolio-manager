@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockHistory;
 import teamrocket.portfolio_manager.entity.StockTransaction;
+import teamrocket.portfolio_manager.service.StockService;
 
 import java.util.List;
 
@@ -13,12 +14,13 @@ import java.util.List;
 public class StockController {
 
     // Inject Service class
+    StockService stockService;
 
     // Read
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Stock> getAllStocks(){
-        return null;
+        return stockService.getAllStocks();
     }
     @GetMapping("/owned")
     @ResponseStatus(HttpStatus.OK)
@@ -28,7 +30,7 @@ public class StockController {
     @GetMapping("/history/{stockSymbol}")
     @ResponseStatus(HttpStatus.OK)
     public List<StockHistory> getStockHistoryBySymbol(@PathVariable String stockSymbol){
-        return null;
+        return stockService.getStockHistoryBySymbol(stockSymbol);
     }
     @GetMapping("/transactions")
     @ResponseStatus(HttpStatus.OK)
