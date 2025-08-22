@@ -40,14 +40,14 @@ public class PortfolioController {
     }
     @GetMapping("/{portfolioId}/transactions")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockTransaction> getAllStockTransactions(@PathVariable int portfolioId) {
-        return portfolioService.getPortfolioTransactions(portfolioId);
-    }
-    @GetMapping("/{portfolioId}/transactions")
-    @ResponseStatus(HttpStatus.OK)
-    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable int portfolioId, @RequestParam String stockSymbol) {
-        Integer stockId = stockService.getStockId(stockSymbol);
-        return portfolioService.getPortfolioTransactionsBySymbol(portfolioId, stockId);
+    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable int portfolioId, @RequestParam(required = false) String stockSymbol) {
+        if (stockSymbol == null) {
+            return portfolioService.getPortfolioTransactions(portfolioId);
+
+        } else {
+            Integer stockId = stockService.getStockId(stockSymbol);
+            return portfolioService.getPortfolioTransactionsBySymbol(portfolioId, stockId);
+        }
     }
     @GetMapping("/owned")
     @ResponseStatus(HttpStatus.OK)
