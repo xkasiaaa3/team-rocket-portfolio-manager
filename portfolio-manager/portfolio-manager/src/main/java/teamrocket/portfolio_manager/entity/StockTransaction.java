@@ -18,11 +18,18 @@ public class StockTransaction {
     private BigDecimal amount;
     private Action action;
 
-    public StockTransaction(Integer stockId, Date date, BigDecimal amount, Action action) {
+    public BigDecimal getActionPrice() {
+        return actionPrice;
+    }
+
+    private BigDecimal actionPrice;
+
+    public StockTransaction(Integer stockId, Date date, BigDecimal amount, Action action, BigDecimal actionPrice) {
         this.stockId = stockId;
         this.date = date;
         this.amount = amount;
         this.action = action;
+        this.actionPrice = actionPrice;
     }
 
     public StockTransaction() {

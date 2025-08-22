@@ -47,13 +47,15 @@ public class PortfolioServiceTests {
         assertEquals(BigDecimal.valueOf(5), stockTransaction.getAmount());
         assertEquals(stock.getId(), stockTransaction.getStockId());
         assertEquals(Action.BUYING, stockTransaction.getAction());
+        assertEquals(BigDecimal.valueOf(550), stockTransaction.getActionPrice());
+
     }
 
     @Test
     void sellStock() {
         Stock stock = new Stock(1, "AUL", "Aula super stock", "USD", BigDecimal.valueOf(550));
         when(stockRepository.findById(stock.getId())).thenReturn(Optional.of(stock));
-        StockTransaction boughtTransaction = new StockTransaction(stock.getId(), new Date(), BigDecimal.valueOf(5), Action.BUYING);
+        StockTransaction boughtTransaction = new StockTransaction(stock.getId(), new Date(), BigDecimal.valueOf(5), Action.BUYING, BigDecimal.valueOf(550));
         when(stockTransactionRepository.findAllByStockId(stock.getId())).thenReturn(List.of(boughtTransaction));
 
         StockTransaction stockTransaction = portfolioService.sellStock(stock.getId(), BigDecimal.valueOf(3));
@@ -61,14 +63,15 @@ public class PortfolioServiceTests {
         assertEquals(BigDecimal.valueOf(3), stockTransaction.getAmount());
         assertEquals(stock.getId(), stockTransaction.getStockId());
         assertEquals(Action.SELLING, stockTransaction.getAction());
+        assertEquals(BigDecimal.valueOf(550), stockTransaction.getActionPrice());
     }
 
     @Test
     void notEnoughStockToSell() {
         Stock stock = new Stock(1, "AUL", "Aula super stock", "USD", BigDecimal.valueOf(550));
         when(stockRepository.findById(stock.getId())).thenReturn(Optional.of(stock));
-        StockTransaction boughtTransaction = new StockTransaction(stock.getId(), new Date(), BigDecimal.valueOf(5), Action.BUYING);
-        StockTransaction soldTransaction = new StockTransaction(stock.getId(), new Date(), BigDecimal.valueOf(3), Action.SELLING);
+        StockTransaction boughtTransaction = new StockTransaction(stock.getId(), new Date(), BigDecimal.valueOf(5), Action.BUYING, BigDecimal.valueOf(550));
+        StockTransaction soldTransaction = new StockTransaction(stock.getId(), new Date(), BigDecimal.valueOf(3), Action.SELLING, BigDecimal.valueOf(550));
 
         when(stockTransactionRepository.findAllByStockId(stock.getId())).thenReturn(List.of(boughtTransaction,soldTransaction));
 

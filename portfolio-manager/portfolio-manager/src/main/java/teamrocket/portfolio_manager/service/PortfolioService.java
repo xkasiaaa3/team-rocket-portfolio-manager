@@ -29,14 +29,14 @@ public class PortfolioService {
 
     StockTransaction buyStock(Integer stockId, BigDecimal amount) {
         Stock stock = stockRepository.findById(stockId).orElseThrow(() -> new StockNotFoundException(stockId));
-        StockTransaction stockTransaction = stockTransactionRepository.save(new StockTransaction(stockId, new Date(), amount, Action.BUYING));
+        StockTransaction stockTransaction = stockTransactionRepository.save(new StockTransaction(stockId, new Date(), amount, Action.BUYING, stock.getCurrentPrice()));
         return stockTransaction;
     }
 
     StockTransaction sellStock(Integer stockId, BigDecimal amount) {
         Stock stock = stockRepository.findById(stockId).orElseThrow(() -> new StockNotFoundException(stockId));
         checkStockAmount(stockId, amount);
-        StockTransaction stockTransaction = stockTransactionRepository.save(new StockTransaction(stockId, new Date(), amount, Action.SELLING));
+        StockTransaction stockTransaction = stockTransactionRepository.save(new StockTransaction(stockId, new Date(), amount, Action.SELLING, stock.getCurrentPrice()));
         return stockTransaction;
     }
 
