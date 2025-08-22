@@ -12,6 +12,7 @@ public class Portfolio {
     @Id
     @GeneratedValue
     private Integer id;
+    private String name;
     @Positive
     private BigDecimal balance;
 
@@ -19,13 +20,16 @@ public class Portfolio {
     private List<StockTransaction> stockTransactions;
 
     public Portfolio() {}
-    public Portfolio(BigDecimal balance, List<StockTransaction> stockTransactions) {
+    public Portfolio(String name, BigDecimal balance) {
+        this.name = name;
         this.balance = balance;
-        this.stockTransactions = stockTransactions;
     }
 
     public Integer getId() {
         return id;
+    }
+    public String getName() {
+        return name;
     }
     public BigDecimal getBalance() {
         return balance;
@@ -34,6 +38,9 @@ public class Portfolio {
         return stockTransactions;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }

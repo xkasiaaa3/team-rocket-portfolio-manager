@@ -4,9 +4,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import teamrocket.portfolio_manager.entity.Portfolio;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
 import teamrocket.portfolio_manager.model.Action;
+import teamrocket.portfolio_manager.repository.PortfolioRepository;
 import teamrocket.portfolio_manager.repository.StockRepository;
 import teamrocket.portfolio_manager.repository.StockTransactionRepository;
 import teamrocket.portfolio_manager.service.StockService;
@@ -19,6 +21,15 @@ public class PortfolioManagerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PortfolioManagerApplication.class, args);
+	}
+
+	@Bean
+	CommandLineRunner initPortfolioDatabase(PortfolioRepository portfolioRepository) {
+		return args -> {
+			if (portfolioRepository.findAll().isEmpty()) {
+				portfolioRepository.save(new Portfolio("Your First Portfolio", new BigDecimal("1000000")));
+			}
+		};
 	}
 
 	@Bean
@@ -38,11 +49,11 @@ public class PortfolioManagerApplication {
 		return args -> {
 			if (stockTransactionRepository.findAll().isEmpty()) {
 				stockTransactionRepository.save(new StockTransaction(
-						1, new Date(), new BigDecimal("15"), Action.BUYING, new BigDecimal("142.35")));
+						1, 1, new Date(), new BigDecimal("15"), Action.BUYING, new BigDecimal("142.35")));
 				stockTransactionRepository.save(new StockTransaction(
-						1, new Date(), new BigDecimal("18"), Action.BUYING, new BigDecimal("135.35")));
+						1, 1, new Date(), new BigDecimal("18"), Action.BUYING, new BigDecimal("135.35")));
 				stockTransactionRepository.save(new StockTransaction(
-						2, new Date(), new BigDecimal("14"), Action.BUYING, new BigDecimal("173.35")));
+						2, 1, new Date(), new BigDecimal("14"), Action.BUYING, new BigDecimal("173.35")));
 			}
 		};
 	}
