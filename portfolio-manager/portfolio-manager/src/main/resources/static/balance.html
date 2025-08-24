@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio Manager - Balance</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+    <link rel="stylesheet" href="styles/balance-styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<!-- Header -->
+<header class="app-header">
+    <div class="icon hamburger"><i class="fas fa-bars"></i></div>
+    <div class="portfolio-name">My Portfolio</div>
+    <div class="icon user"><i class="fas fa-user-circle"></i></div>
+</header>
+
+<!-- Main Body -->
+<main class="app-body">
+    <!-- Column 1: Navigation -->
+    <nav class="sidebar">
+        <a href="index.html" class="nav-button">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="balance.html" class="nav-button">
+            <i class="fas fa-wallet"></i> Manage Balance
+        </a>
+        <a href="stocks.html" class="nav-button">
+            <i class="fas fa-chart-line"></i> View Stocks
+        </a>
+        <a href="history.html" class="nav-button">
+            <i class="fas fa-receipt"></i> Transaction History
+        </a>
+    </nav>
+
+    <!-- Column 2: Balance Display -->
+    <section class="portfolio balance-section">
+        <div class="funds-display">€12,450.00</div>
+        <div class="funds-actions">
+            <button class="action-button">
+                <i class="fas fa-plus"></i> Add Funds
+            </button>
+            <button class="action-button">
+                <i class="fas fa-minus"></i> Remove Funds
+            </button>
+        </div>
+    </section>
+
+    <!-- Column 3: Recent Transactions -->
+    <aside class="market">
+        <h3>Recent Transactions</h3>
+        <ul>
+            <li>+ €500.00 — Deposit</li>
+            <li>- €250.00 — Buy AAPL</li>
+            <li>+ €120.00 — Dividend MSFT</li>
+            <li>- €300.00 — Buy TSLA</li>
+        </ul>
+    </aside>
+</main>
+
+<script src="scripts/balance-script.js"></script>
+</body>
+</html>

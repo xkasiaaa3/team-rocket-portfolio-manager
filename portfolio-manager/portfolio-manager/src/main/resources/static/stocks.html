@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio Manager - Stocks</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+    <link rel="stylesheet" href="styles/stocks-styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<!-- Header -->
+<header class="app-header">
+    <div class="icon hamburger"><i class="fas fa-bars"></i></div>
+    <div class="portfolio-name">My Portfolio</div>
+    <div class="icon user"><i class="fas fa-user-circle"></i></div>
+</header>
+
+<!-- Main Body -->
+<main class="app-body">
+    <!-- Column 1: Navigation -->
+    <nav class="sidebar">
+        <a href="index.html" class="nav-button">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="balance.html" class="nav-button">
+            <i class="fas fa-wallet"></i> Manage Balance
+        </a>
+        <a href="stocks.html" class="nav-button">
+            <i class="fas fa-chart-line"></i> View Stocks
+        </a>
+        <a href="history.html" class="nav-button">
+            <i class="fas fa-receipt"></i> Transaction History
+        </a>
+    </nav>
+
+    <!-- Column 2: Stock List -->
+    <section class="portfolio stocks-section">
+        <div class="stock-controls">
+            <input type="text" id="searchBar" placeholder="Search stocks..." />
+            <div class="filters">
+                <select id="filterOwned">
+                    <option value="all">All Stocks</option>
+                    <option value="owned">Owned Only</option>
+                </select>
+                <select id="sortOrder">
+                    <option value="name">Sort by Name</option>
+                    <option value="gain">Sort by Gain</option>
+                    <option value="loss">Sort by Loss</option>
+                </select>
+            </div>
+        </div>
+
+        <ul id="stockList" class="stock-list">
+            <!-- Example stock item -->
+            <li class="stock-item" data-symbol="AAPL">
+                <span>Apple (AAPL)</span>
+                <span class="gain">+2.5%</span>
+            </li>
+        </ul>
+
+        <!-- Modal for stock details -->
+        <div id="stockModal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2 id="stockTitle">Apple (AAPL)</h2>
+                <canvas id="stockChart"></canvas>
+                <div class="trade-actions">
+                    <input type="number" id="quantity" placeholder="Quantity" />
+                    <button id="buyButton">Buy</button>
+                    <button id="sellButton">Sell</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Column 3: Market Movers -->
+    <aside class="market">
+        <h3>Market Movers</h3>
+        <ul>
+            <li><strong>Top Gainers:</strong> NVDA +6.2%, AMD +5.8%</li>
+            <li><strong>Top Losers:</strong> ZM -4.1%, PTON -3.9%</li>
+        </ul>
+    </aside>
+</main>
+
+<script src="scripts/stocks-script.js"></script>
+</body>
+</html>

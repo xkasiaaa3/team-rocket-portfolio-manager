@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio Manager - Home</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<!-- Header -->
+<header class="app-header">
+    <div class="icon hamburger"><i class="fas fa-bars"></i></div>
+    <div class="portfolio-name">My Portfolio</div>
+    <div class="icon user"><i class="fas fa-user-circle"></i></div>
+</header>
+
+<!-- Main Body -->
+<main class="app-body">
+    <!-- Column 1: Navigation -->
+    <nav class="sidebar">
+        <a href="index.html" class="nav-button">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="balance.html" class="nav-button">
+            <i class="fas fa-wallet"></i> Manage Balance
+        </a>
+        <a href="stocks.html" class="nav-button">
+            <i class="fas fa-chart-line"></i> View Stocks
+        </a>
+        <a href="history.html" class="nav-button">
+            <i class="fas fa-receipt"></i> Transaction History
+        </a>
+    </nav>
+
+    <!-- Column 2: Middle Content -->
+    <section class="portfolio">
+        <div class="graph-placeholder">[Welcome to your portfolio dashboard]</div>
+        <div class="insights">
+            <p><strong>Recent Activity:</strong> Portfolio created</p>
+            <p><strong>Next Steps:</strong> Add funds or view stock options</p>
+        </div>
+    </section>
+
+    <!-- Column 3: Right Content -->
+    <aside class="market">
+        <h3>Market Highlights</h3>
+        <ul>
+            <li>Fed announces rate decision</li>
+            <li>Tech stocks rally</li>
+        </ul>
+    </aside>
+</main>
+
+<script src="scripts/index-script.js"></script>
+</body>
+</html>
