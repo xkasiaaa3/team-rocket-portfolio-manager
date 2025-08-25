@@ -2,16 +2,10 @@ package teamrocket.portfolio_manager.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import teamrocket.portfolio_manager.entity.Portfolio;
-import teamrocket.portfolio_manager.entity.PortfolioHistory;
-import teamrocket.portfolio_manager.entity.Stock;
-import teamrocket.portfolio_manager.entity.StockTransaction;
+import teamrocket.portfolio_manager.entity.*;
 import teamrocket.portfolio_manager.exception.*;
 import teamrocket.portfolio_manager.model.Action;
-import teamrocket.portfolio_manager.repository.PortfolioHistoryRepository;
-import teamrocket.portfolio_manager.repository.PortfolioRepository;
-import teamrocket.portfolio_manager.repository.StockRepository;
-import teamrocket.portfolio_manager.repository.StockTransactionRepository;
+import teamrocket.portfolio_manager.repository.*;
 
 import javax.sound.sampled.Port;
 import java.math.BigDecimal;
@@ -24,6 +18,8 @@ public class PortfolioService {
     private StockRepository stockRepository;
     @Autowired
     private StockTransactionRepository stockTransactionRepository;
+    @Autowired
+    private StockHistoryRepository stockHistoryRepository;
     @Autowired
     private PortfolioRepository portfolioRepository;
     @Autowired
@@ -74,13 +70,15 @@ public class PortfolioService {
         return stockTransaction;
     }
 
-    private void checkStockAmount(Integer stockId, Integer portfolioId, BigDecimal amount) {
+    private BigDecimal checkStockAmount(Integer stockId, Integer portfolioId, BigDecimal amount) {
         List<StockTransaction> transactions = stockTransactionRepository.findByPortfolioIdAndStockId(portfolioId, stockId);
         BigDecimal sold = transactions.stream().filter(t -> t.getAction() == Action.SELLING).map(StockTransaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal bought = transactions.stream().filter(t -> t.getAction() == Action.BUYING).map(StockTransaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-        if (bought.subtract(sold).compareTo(amount) < 0) {
+        BigDecimal amountOwned = bought.subtract(sold);
+        if (amountOwned.compareTo(amount) < 0) {
             throw new NotEnoughStocksException(stockId);
         }
+        return amountOwned;
     }
 
     public List<Stock> getPortfolioStocks(Integer portfolioId) {
@@ -88,7 +86,39 @@ public class PortfolioService {
         HashSet<Integer> portfolioStockIds = new HashSet<>();
         transactions.forEach(t -> portfolioStockIds.add(t.getStockId()));
         List<Stock> stocks = new ArrayList<>();
-        portfolioStockIds.forEach(i -> stocks.add(stockRepository.findById(i).orElseThrow(() -> new StockNotFoundException(i))));
+        portfolioStockIds.forEach(i -> {
+            if (checkStockAmount(i, portfolioId, BigDecimal.ZERO).compareTo(BigDecimal.ZERO) > 0) {
+                stocks.add(stockRepository.findById(i).orElseThrow(() -> new StockNotFoundException(i)));
+            }
+        });
         return stocks;
+    }
+
+    public BigDecimal getPortfolioNetworth(Integer portfolioId) {
+        BigDecimal netWorth = BigDecimal.ZERO;
+        List<Stock> stocks = getPortfolioStocks(portfolioId);
+        for (Stock s : stocks) {
+            netWorth = netWorth.add(checkStockAmount(s.getId(), portfolioId, BigDecimal.ZERO).multiply(s.getCurrentPrice()));
+        }
+        return netWorth;
+    }
+
+    public BigDecimal updatePortfolioHistory(Integer portfolioId) {
+        BigDecimal netWorth = getPortfolioNetworth(portfolioId);
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+        portfolioHistoryRepository.save(new PortfolioHistory(netWorth, portfolio.getCurrentDate()));
+        return netWorth;
+    }
+
+    public void fowardDayAndUpdateValues(Integer portfolioId) {
+        // Add today's networth to the portfolio history, then move forward one day and update stock prices
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+        updatePortfolioHistory(portfolioId);
+        portfolio.forwardNextDay();
+        List<Stock> stocks = stockRepository.findAll();
+        for (Stock s : stocks) {
+            BigDecimal newPrice = stockHistoryRepository.findByStockIdAndDate(s.getId(), portfolio.getCurrentDate()).getPrice();
+            s.setCurrentPrice(newPrice);
+        }
     }
 }

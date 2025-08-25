@@ -60,7 +60,7 @@ public class PortfolioController {
     // Update
     @PutMapping("/date")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Date updateDate(Date newDate) {
+    public Date updateDate() {
         return null;
     }
     @PutMapping("/{portfolioId}/balance")
