@@ -3,6 +3,7 @@ package teamrocket.portfolio_manager.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import org.hibernate.type.descriptor.DateTimeUtils;
+import org.springframework.beans.factory.annotation.Value;
 import teamrocket.portfolio_manager.service.PortfolioService;
 
 import java.math.BigDecimal;
@@ -19,31 +20,32 @@ public class Portfolio {
     private Integer id;
     private String name;
     @Positive
-    private BigDecimal balance;
-    private Date currentDate = new Date("2016-01-01");
+    private BigDecimal balance;;
     @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<StockTransaction> stockTransactions;
     @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PortfolioHistory> portfolioHistories;
 
+    private Date currentPortfolioDate;
 
     public Date getCurrentDate() {
-        return currentDate;
+        return currentPortfolioDate;
     }
 
     public Date forwardNextDay(){
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
+        calendar.setTime(currentPortfolioDate);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
-        currentDate = calendar.getTime();
+        currentPortfolioDate = calendar.getTime();
 
-        return currentDate;
+        return currentPortfolioDate;
     }
 
     public Portfolio() {}
     public Portfolio(String name, BigDecimal balance) {
         this.name = name;
         this.balance = balance;
+        this.currentPortfolioDate = Date.from(Instant.parse("1988-01-01T00:00:00Z"));
     }
 
     public Integer getId() {
