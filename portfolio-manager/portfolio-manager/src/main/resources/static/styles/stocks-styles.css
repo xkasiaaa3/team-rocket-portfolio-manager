@@ -71,6 +71,11 @@
   background-color: var(--hover-bg);
 }
 
+#page-options {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* Modal styling */
 .modal {
   position: fixed;

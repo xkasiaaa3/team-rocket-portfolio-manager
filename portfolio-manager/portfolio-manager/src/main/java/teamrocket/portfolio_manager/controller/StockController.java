@@ -9,6 +9,7 @@ import teamrocket.portfolio_manager.service.StockService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/stocks")
 public class StockController {
@@ -21,7 +22,7 @@ public class StockController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Stock> getAllValidStocks(){
-        return stockService.getAllStocks();
+        return stockService.getAllValidStocks();
     }
 
     @GetMapping("/update")

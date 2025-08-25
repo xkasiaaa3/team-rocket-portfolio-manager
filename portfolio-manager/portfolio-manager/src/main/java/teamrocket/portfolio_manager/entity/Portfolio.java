@@ -82,10 +82,10 @@ public class Portfolio {
         this.balance = balance;
     }
     public void addBalance(BigDecimal amount) {
-        this.balance.add(amount);
+        this.balance = this.balance.add(amount);
     }
     public void subtractBalance(BigDecimal amount) {
-        this.balance.subtract(amount);
+        this.balance = this.balance.subtract(amount);
     }
 //    public void setStockTransactions(List<StockTransaction> stockTransactions) {
 //        this.stockTransactions = stockTransactions;

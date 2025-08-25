@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/portfolios")
 public class PortfolioController {
@@ -31,7 +32,12 @@ public class PortfolioController {
     public List<Portfolio> getAllPortfolios() {
         return portfolioService.getAllPortfolios();
     }
-    @GetMapping("/{portfolioId}")
+    @GetMapping("/{portfolioId}/networth")
+    @ResponseStatus(HttpStatus.OK)
+    public BigDecimal getPortfolioNetworth(@PathVariable Integer portfolioId) {
+        return portfolioService.getPortfolioNetworth(portfolioId);
+    }
+    @GetMapping("/{portfolioId}/histories")
     @ResponseStatus(HttpStatus.OK)
     public List<PortfolioHistory> getPortfolioHistories(@PathVariable Integer portfolioId) {
         return portfolioService.getPortfolioHistories(portfolioId);
@@ -64,7 +70,8 @@ public class PortfolioController {
     }
     @PutMapping("/{portfolioId}/balance")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public BigDecimal updateBalance(@PathVariable Integer portfolioId, BigDecimal changeInBalance) {
+    public BigDecimal updateBalance(@PathVariable Integer portfolioId, @RequestBody BigDecimal changeInBalance) {
+        System.out.println("The Change is: " + changeInBalance);
         return portfolioService.updatePortfolioBalance(portfolioId, changeInBalance);
     }
     @PostMapping("/{portfolioId}/transaction")

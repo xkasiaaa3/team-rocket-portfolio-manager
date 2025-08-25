@@ -38,7 +38,7 @@ public class StockService {
 
     public List<Stock> getAllValidStocks() {
         List<Stock> stocks = stockRepository.findByCurrentPriceIsNotNull();
-        stocks.sort(Comparator.comparing(Stock::getStockName));
+//        stocks.sort(Comparator.comparing(Stock::getStockName));
         return stocks;
     }
 
@@ -100,7 +100,6 @@ public class StockService {
         } catch (Exception e) {
             System.out.println("Problem with updating stock " + stockSymbol);
         }
-
     }
 
     @Transactional
