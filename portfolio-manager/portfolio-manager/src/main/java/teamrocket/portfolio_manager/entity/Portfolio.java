@@ -23,6 +23,8 @@ public class Portfolio {
     private Date currentDate = new Date("2016-01-01");
     @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<StockTransaction> stockTransactions;
+    @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<PortfolioHistory> portfolioHistories;
 
 
     public Date getCurrentDate() {
@@ -56,6 +58,9 @@ public class Portfolio {
     public List<StockTransaction> getStockTransactions() {
         return stockTransactions;
     }
+    public List<PortfolioHistory> getPortfolioHistories() {
+        return portfolioHistories;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -65,5 +70,8 @@ public class Portfolio {
     }
     public void setStockTransactions(List<StockTransaction> stockTransactions) {
         this.stockTransactions = stockTransactions;
+    }
+    public void setPortfolioHistories(List<PortfolioHistory> portfolioHistories) {
+        this.portfolioHistories = portfolioHistories;
     }
 }

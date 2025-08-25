@@ -24,9 +24,14 @@ public class StockController {
     public List<Stock> getAllStocks(){
         return stockService.getAllStocks();
     }
-    @GetMapping("/history/{stockSymbol}")
+    @GetMapping("/{stockSymbol}/history")
     @ResponseStatus(HttpStatus.OK)
     public List<StockHistory> getStockHistoryBySymbol(@PathVariable String stockSymbol){
         return stockService.getStockHistoryBySymbol(stockSymbol);
+    }
+    @GetMapping("/{stockSymbol}/change")
+    @ResponseStatus(HttpStatus.OK)
+    public double getStockChangeBySymbol(@PathVariable String stockSymbol){
+        return stockService.getStockChangeBySymbol(stockSymbol);
     }
 }
