@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import teamrocket.portfolio_manager.entity.*;
 import teamrocket.portfolio_manager.exception.*;
 import teamrocket.portfolio_manager.model.Action;
+import teamrocket.portfolio_manager.model.TransactionDTO;
 import teamrocket.portfolio_manager.repository.*;
 
+import javax.sound.sampled.Port;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -63,16 +65,19 @@ public class PortfolioService {
 
     StockTransaction buyStock(Integer stockId, Integer portfolioId, BigDecimal amount) {
         Stock stock = stockRepository.findById(stockId).orElseThrow(() -> new StockNotFoundException(stockId));
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+        checkEnoughBalance(stock.getCurrentPrice(), amount, portfolio.getBalance());
         StockTransaction stockTransaction = stockTransactionRepository.save(
-                new StockTransaction(stockId, portfolioId, new Date(), amount, Action.BUYING, stock.getCurrentPrice()));
+                new StockTransaction(stockId, portfolioId, portfolio.getCurrentDate(), amount, Action.BUYING, stock.getCurrentPrice()));
         return stockTransaction;
     }
 
     StockTransaction sellStock(Integer stockId, Integer portfolioId, BigDecimal amount) {
         Stock stock = stockRepository.findById(stockId).orElseThrow(() -> new StockNotFoundException(stockId));
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         checkStockAmount(stockId, portfolioId, amount);
         StockTransaction stockTransaction = stockTransactionRepository.save(new StockTransaction(
-                stockId, portfolioId, new Date(), amount, Action.SELLING, stock.getCurrentPrice()));
+                stockId, portfolioId, portfolio.getCurrentDate(), amount, Action.SELLING, stock.getCurrentPrice()));
         return stockTransaction;
     }
 
@@ -85,6 +90,13 @@ public class PortfolioService {
             throw new NotEnoughStocksException(stockId);
         }
         return amountOwned;
+    }
+
+    private void checkEnoughBalance(BigDecimal currentPrice, BigDecimal amount, BigDecimal balance) {
+        BigDecimal price = currentPrice.multiply(amount);
+        if (balance.compareTo(price) < 0) {
+            throw new NotEnoughBalanceException();
+        }
     }
 
     public List<Stock> getPortfolioStocks(Integer portfolioId) {
@@ -147,5 +159,19 @@ public class PortfolioService {
         }
         stockRepository.saveAll(stocks);
         return portfolio.getCurrentDate();
+    }
+
+    public StockTransaction makeTransaction(Integer portfolioId, TransactionDTO transactionDTO) {
+        Integer stockId = transactionDTO.getStockId();
+        BigDecimal amount = transactionDTO.getAmount();
+        switch (transactionDTO.getAction()) {
+            case BUYING -> {
+                return buyStock(stockId, portfolioId, amount);
+            }
+            case SELLING -> {
+                return sellStock(stockId, portfolioId, amount);
+            }
+            default -> throw new RuntimeException();
+        }
     }
 }

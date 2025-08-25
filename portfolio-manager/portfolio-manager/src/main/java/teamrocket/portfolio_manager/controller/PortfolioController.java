@@ -70,6 +70,6 @@ public class PortfolioController {
     @PostMapping("/{portfolioId}/transaction")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public StockTransaction addStockTransaction(@PathVariable Integer portfolioId, @RequestBody TransactionDTO transactionDTO) {
-        return null;
+        return portfolioService.makeTransaction(portfolioId, transactionDTO);
     }
 }

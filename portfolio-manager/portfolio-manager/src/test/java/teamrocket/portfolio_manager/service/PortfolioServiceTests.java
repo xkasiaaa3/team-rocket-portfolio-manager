@@ -59,7 +59,7 @@ public class PortfolioServiceTests {
         Stock stock = new Stock(1, "AUL", "Aula super stock", "USD", BigDecimal.valueOf(550));
         when(stockRepository.findById(stock.getId())).thenReturn(Optional.of(stock));
         StockTransaction boughtTransaction = new StockTransaction(stock.getId(), 1, new Date(), BigDecimal.valueOf(5), Action.BUYING, BigDecimal.valueOf(550));
-        when(stockTransactionRepository.findAllByStockId(stock.getId())).thenReturn(List.of(boughtTransaction));
+        when(stockTransactionRepository.findByPortfolioIdAndStockId(1, stock.getId())).thenReturn(List.of(boughtTransaction));
 
         StockTransaction stockTransaction = portfolioService.sellStock(stock.getId(), 1, BigDecimal.valueOf(3));
 
@@ -76,7 +76,7 @@ public class PortfolioServiceTests {
         StockTransaction boughtTransaction = new StockTransaction(stock.getId(), 1, new Date(), BigDecimal.valueOf(5), Action.BUYING, BigDecimal.valueOf(550));
         StockTransaction soldTransaction = new StockTransaction(stock.getId(), 1, new Date(), BigDecimal.valueOf(3), Action.SELLING, BigDecimal.valueOf(550));
 
-        when(stockTransactionRepository.findAllByStockId(stock.getId())).thenReturn(List.of(boughtTransaction,soldTransaction));
+        when(stockTransactionRepository.findByPortfolioIdAndStockId(1, stock.getId())).thenReturn(List.of(boughtTransaction,soldTransaction));
 
         assertThrows(NotEnoughStocksException.class, () -> portfolioService.sellStock(stock.getId(), 1, BigDecimal.valueOf(4)));
     }
