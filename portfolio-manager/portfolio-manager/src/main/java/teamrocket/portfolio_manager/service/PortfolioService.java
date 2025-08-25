@@ -7,7 +7,6 @@ import teamrocket.portfolio_manager.exception.*;
 import teamrocket.portfolio_manager.model.Action;
 import teamrocket.portfolio_manager.repository.*;
 
-import javax.sound.sampled.Port;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -103,11 +102,28 @@ public class PortfolioService {
         return netWorth;
     }
 
-    public BigDecimal updatePortfolioHistory(Integer portfolioId) {
-        BigDecimal netWorth = getPortfolioNetworth(portfolioId);
+    public double getPortfolioNetworthChange(Integer portfolioId) {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
-        portfolioHistoryRepository.save(new PortfolioHistory(netWorth, portfolio.getCurrentDate()));
-        return netWorth;
+
+        int dateDifference = 1;
+
+        Date currentDate = portfolio.getCurrentDate();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -dateDifference);
+        Date previousDate = calendar.getTime();
+
+        BigDecimal currentNetworth = getPortfolioNetworth(portfolioId);
+        PortfolioHistory previousPortfolioHistory = portfolioHistoryRepository.findByPortfolioIdAndDate(portfolioId, previousDate);
+        BigDecimal previousNetworth = previousPortfolioHistory.getNetworth();
+
+        return (currentNetworth.doubleValue() - previousNetworth.doubleValue()) / previousNetworth.doubleValue();
+    }
+
+    public void updatePortfolioHistory(Integer portfolioId) {
+        BigDecimal networth = getPortfolioNetworth(portfolioId);
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+        portfolioHistoryRepository.save(new PortfolioHistory(networth, portfolio.getCurrentDate()));
     }
 
     public void fowardDayAndUpdateValues(Integer portfolioId) {

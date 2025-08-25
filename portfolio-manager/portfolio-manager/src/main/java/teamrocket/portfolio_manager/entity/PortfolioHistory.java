@@ -16,17 +16,17 @@ public class PortfolioHistory {
     private Integer portfolioId;
     Date date;
     @Positive
-    BigDecimal netWorth;
+    BigDecimal networth;
 
     public PortfolioHistory() {
     }
-    public PortfolioHistory(BigDecimal netWorth, Date date) {
-        this.netWorth = netWorth;
+    public PortfolioHistory(BigDecimal networth, Date date) {
+        this.networth = networth;
         this.date = date;
     }
 
-    public BigDecimal getNetWorth() {
-        return netWorth;
+    public BigDecimal getNetworth() {
+        return networth;
     }
 
     public Date getDate() {
@@ -34,7 +34,7 @@ public class PortfolioHistory {
     }
 
     public void setNetWorth(BigDecimal netWorth) {
-        this.netWorth = netWorth;
+        this.networth = netWorth;
     }
 
     public void setDate(Date date) {
