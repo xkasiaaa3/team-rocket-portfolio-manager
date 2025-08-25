@@ -2,9 +2,14 @@ package teamrocket.portfolio_manager.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
+import org.hibernate.type.descriptor.DateTimeUtils;
 import teamrocket.portfolio_manager.service.PortfolioService;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.temporal.TemporalAmount;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -15,9 +20,23 @@ public class Portfolio {
     private String name;
     @Positive
     private BigDecimal balance;
-
+    private Date currentDate = new Date("2016-01-01");
     @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<StockTransaction> stockTransactions;
+
+
+    public Date getCurrentDate() {
+        return currentDate;
+    }
+
+    public Date forwardNextDay(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        currentDate = calendar.getTime();
+
+        return currentDate;
+    }
 
     public Portfolio() {}
     public Portfolio(String name, BigDecimal balance) {
