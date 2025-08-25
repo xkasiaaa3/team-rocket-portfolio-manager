@@ -110,6 +110,7 @@ public class PortfolioService {
     }
 
     public double getPortfolioNetworthChange(Integer portfolioId) {
+        // FIX FOR PREVIOUS DAY IS WEEKEND
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
 
         int dateDifference = 1;

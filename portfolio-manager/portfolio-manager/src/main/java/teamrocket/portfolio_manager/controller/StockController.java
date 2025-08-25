@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockHistory;
-import teamrocket.portfolio_manager.entity.StockTransaction;
 import teamrocket.portfolio_manager.service.StockService;
 
 import java.util.List;
@@ -21,8 +20,8 @@ public class StockController {
     // Read
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Stock> getAllStocks(){
-        return stockService.getAllStocks();
+    public List<Stock> getAllValidStocks(){
+        return stockService.getAllValidStocks();
     }
 
     @GetMapping("/update")
@@ -31,15 +30,15 @@ public class StockController {
         stockService.updateStocks();
     }
 
-    @GetMapping("/history/{stockSymbol}")
+    @GetMapping("/{stockId}/history")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockHistory> getStockHistoryBySymbol(@PathVariable String stockSymbol){
-        return stockService.getStockHistoryBySymbol(stockSymbol);
+    public List<StockHistory> getStockHistoryBySymbol(@PathVariable Integer stockId){
+        return stockService.getStockHistoryByStockId(stockId);
     }
-    @GetMapping("/{stockSymbol}/change")
+    @GetMapping("/{stockId}/change")
     @ResponseStatus(HttpStatus.OK)
-    public double getStockChangeBySymbol(@PathVariable String stockSymbol){
+    public double getStockChangeBySymbol(@PathVariable Integer stockId){
         // PORTFOLIO ID IS SET TO 1 CHANGE LATER
-        return stockService.getStockChangeBySymbol(stockSymbol, 1);
+        return stockService.getStockChangeByStockId(stockId, 1);
     }
 }

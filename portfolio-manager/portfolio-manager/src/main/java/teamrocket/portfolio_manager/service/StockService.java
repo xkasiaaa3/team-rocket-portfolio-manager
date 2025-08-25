@@ -5,7 +5,6 @@ import jakarta.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import teamrocket.portfolio_manager.entity.Portfolio;
 import teamrocket.portfolio_manager.entity.Stock;
@@ -18,7 +17,6 @@ import teamrocket.portfolio_manager.repository.StockRepository;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +32,7 @@ public class StockService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Stock> getAllStocks() {
+    public List<Stock> getAllValidStocks() {
         List<Stock> stocks = stockRepository.findByCurrentPriceIsNotNull();
         stocks.sort(Comparator.comparing(Stock::getStockName));
         return stocks;
@@ -45,17 +43,15 @@ public class StockService {
         return stock.getId();
     }
 
-    public List<StockHistory> getStockHistoryBySymbol(String stockSymbol) {
-        Stock stock = stockRepository.findByStockSymbol(stockSymbol).orElseThrow(() -> new StockNotFoundException(stockSymbol));
-
-        List<StockHistory> stockHistories = stockHistoryRepository.findAllByStockId(stock.getId());
+    public List<StockHistory> getStockHistoryByStockId(Integer stockId) {
+        List<StockHistory> stockHistories = stockHistoryRepository.findAllByStockId(stockId);
         stockHistories.sort(Comparator.comparing(StockHistory::getDate));
-
         return stockHistories;
     }
 
-    public double getStockChangeBySymbol(String stockSymbol, Integer portfolioId) {
-        Stock stock = stockRepository.findByStockSymbol(stockSymbol).orElseThrow(() -> new StockNotFoundException(stockSymbol));
+    public double getStockChangeByStockId(Integer stockId, Integer portfolioId) {
+        // FIX TO CATCH EXCEPTION WHEN PREVIOUS DAY IS WEEKEND
+        Stock stock = stockRepository.findById(stockId).orElseThrow(() -> new StockNotFoundException(stockId));
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
 
         int dateDifference = 1;
@@ -71,7 +67,6 @@ public class StockService {
         BigDecimal previousPrice = previousStockHistory.getPrice();
 
         return (currentPrice.doubleValue() - previousPrice.doubleValue()) / previousPrice.doubleValue();
-
     }
 
     @Transactional

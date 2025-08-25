@@ -33,35 +33,33 @@ public class PortfolioController {
     }
     @GetMapping("/{portfolioId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<PortfolioHistory> getPortfolioHistories(@PathVariable int portfolioId) {
+    public List<PortfolioHistory> getPortfolioHistories(@PathVariable Integer portfolioId) {
         return portfolioService.getPortfolioHistories(portfolioId);
     }
     @GetMapping("/{portfolioId}/balance")
     @ResponseStatus(HttpStatus.OK)
-    public BigDecimal getPortfolioBalance(@PathVariable int portfolioId) {
+    public BigDecimal getPortfolioBalance(@PathVariable Integer portfolioId) {
         return portfolioService.getPortfolioBalance(portfolioId);
     }
     @GetMapping("/{portfolioId}/transactions")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable int portfolioId, @RequestParam(required = false) String stockSymbol) {
-        if (stockSymbol == null) {
+    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable Integer portfolioId, @RequestParam(required = false) Integer stockId) {
+        if (stockId == null) {
             return portfolioService.getPortfolioTransactions(portfolioId);
-
         } else {
-            Integer stockId = stockService.getStockId(stockSymbol);
             return portfolioService.getPortfolioTransactionsBySymbol(portfolioId, stockId);
         }
     }
     @GetMapping("/{portfolioId}/stocks")
     @ResponseStatus(HttpStatus.OK)
-    public List<Stock> getOwnedStocks(@PathVariable int portfolioId) {
+    public List<Stock> getOwnedStocks(@PathVariable Integer portfolioId) {
         return portfolioService.getPortfolioStocks(portfolioId);
     }
 
     // Update
     @PutMapping("/{portfolioId}/forward-date")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Date updateDate(@PathVariable int portfolioId) {
+    public Date updateDate(@PathVariable Integer portfolioId) {
         return portfolioService.forwardDayAndUpdateValues(portfolioId);
     }
     @PutMapping("/{portfolioId}/balance")
