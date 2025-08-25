@@ -32,10 +32,15 @@ public class Portfolio {
         return currentPortfolioDate;
     }
 
-    public Date forwardNextDay(){
+    public Date forwardNextWeekDay(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentPortfolioDate);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        if (calendar.get(Calendar.DAY_OF_WEEK) >4){
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
         currentPortfolioDate = calendar.getTime();
 
         return currentPortfolioDate;
@@ -45,7 +50,7 @@ public class Portfolio {
     public Portfolio(String name, BigDecimal balance) {
         this.name = name;
         this.balance = balance;
-        this.currentPortfolioDate = Date.from(Instant.parse("1988-01-01T00:00:00Z"));
+        this.currentPortfolioDate = Date.from(Instant.parse("2015-01-02T00:00:00Z"));
     }
 
     public Integer getId() {
