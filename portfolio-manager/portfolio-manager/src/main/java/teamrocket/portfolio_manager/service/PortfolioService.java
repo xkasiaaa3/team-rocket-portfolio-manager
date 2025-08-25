@@ -41,6 +41,13 @@ public class PortfolioService {
         return portfolio.getBalance();
     }
 
+    public BigDecimal updatePortfolioBalance(Integer portfolioId, BigDecimal changeInBalance) {
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+        portfolio.setBalance(portfolio.getBalance().add(changeInBalance));
+        portfolioRepository.save(portfolio);
+        return portfolio.getBalance();
+    }
+
     public List<StockTransaction> getPortfolioTransactions(Integer portfolioId) {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         return portfolio.getStockTransactions();
@@ -126,7 +133,7 @@ public class PortfolioService {
         portfolioHistoryRepository.save(new PortfolioHistory(networth, portfolio.getCurrentDate()));
     }
 
-    public void fowardDayAndUpdateValues(Integer portfolioId) {
+    public Date forwardDayAndUpdateValues(Integer portfolioId) {
         // Add today's networth to the portfolio history, then move forward one day and update stock prices
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         updatePortfolioHistory(portfolioId);
@@ -136,5 +143,7 @@ public class PortfolioService {
             BigDecimal newPrice = stockHistoryRepository.findByStockIdAndDate(s.getId(), portfolio.getCurrentDate()).getPrice();
             s.setCurrentPrice(newPrice);
         }
+        stockRepository.saveAll(stocks);
+        return portfolio.getCurrentDate();
     }
 }

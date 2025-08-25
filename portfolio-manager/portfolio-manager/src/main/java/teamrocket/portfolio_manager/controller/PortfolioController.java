@@ -7,6 +7,7 @@ import teamrocket.portfolio_manager.entity.Portfolio;
 import teamrocket.portfolio_manager.entity.PortfolioHistory;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
+import teamrocket.portfolio_manager.model.TransactionDTO;
 import teamrocket.portfolio_manager.service.PortfolioService;
 import teamrocket.portfolio_manager.service.StockService;
 
@@ -58,19 +59,19 @@ public class PortfolioController {
     }
 
     // Update
-    @PutMapping("/date")
+    @PutMapping("/{portfolioId}/forward-date")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Date updateDate() {
-        return null;
+    public Date updateDate(@PathVariable int portfolioId) {
+        return portfolioService.forwardDayAndUpdateValues(portfolioId);
     }
     @PutMapping("/{portfolioId}/balance")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public BigDecimal updateBalance(BigDecimal changeInBalance) {
-        return null;
+    public BigDecimal updateBalance(@PathVariable Integer portfolioId, BigDecimal changeInBalance) {
+        return portfolioService.updatePortfolioBalance(portfolioId, changeInBalance);
     }
-    @PostMapping("/transactions")
+    @PostMapping("/{portfolioId}/transaction")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public StockTransaction addStockTransaction(String stockSymbol, Integer amount, String action) {
+    public StockTransaction addStockTransaction(@PathVariable Integer portfolioId, @RequestBody TransactionDTO transactionDTO) {
         return null;
     }
 }

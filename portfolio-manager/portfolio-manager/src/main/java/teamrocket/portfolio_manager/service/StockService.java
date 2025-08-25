@@ -35,7 +35,7 @@ public class StockService {
     private EntityManager entityManager;
 
     public List<Stock> getAllStocks() {
-        List<Stock> stocks = stockRepository.findAll();
+        List<Stock> stocks = stockRepository.findByCurrentPriceIsNotNull();
         stocks.sort(Comparator.comparing(Stock::getStockName));
         return stocks;
     }
@@ -123,6 +123,7 @@ public class StockService {
 
         StockHistory stockHistory = stockHistoryRepository.findByStockIdAndDate(stock.getId(), portfolio.getCurrentDate());
         stock.setCurrentPrice(stockHistory.getPrice());
-        return stockHistory.getPrice();
+        stockRepository.save(stock);
+        return stock.getCurrentPrice();
     }
 }
