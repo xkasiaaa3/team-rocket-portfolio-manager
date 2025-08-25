@@ -32,6 +32,7 @@ public class StockController {
     @GetMapping("/{stockSymbol}/change")
     @ResponseStatus(HttpStatus.OK)
     public double getStockChangeBySymbol(@PathVariable String stockSymbol){
-        return stockService.getStockChangeBySymbol(stockSymbol);
+        // PORTFOLIO ID IS SET TO 1 CHANGE LATER
+        return stockService.getStockChangeBySymbol(stockSymbol, 1);
     }
 }

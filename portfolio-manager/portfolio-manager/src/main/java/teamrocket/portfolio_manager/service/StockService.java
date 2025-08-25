@@ -47,9 +47,9 @@ public class StockService {
         return stockHistories;
     }
 
-    public double getStockChangeBySymbol(String stockSymbol) {
+    public double getStockChangeBySymbol(String stockSymbol, Integer portfolioId) {
         Stock stock = stockRepository.findByStockSymbol(stockSymbol).orElseThrow(() -> new StockNotFoundException(stockSymbol));
-        Portfolio portfolio = portfolioRepository.findById(1).orElseThrow(() -> new PortfolioNotFoundException(1));
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
 
         int dateDifference = 1;
 
@@ -64,5 +64,14 @@ public class StockService {
         BigDecimal previousPrice = previousStockHistory.getPrice();
 
         return (currentPrice.doubleValue() - previousPrice.doubleValue()) / previousPrice.doubleValue();
+    }
+
+    public BigDecimal updateStockPrice(String stockSymbol, Integer portfolioId) {
+        Stock stock = stockRepository.findByStockSymbol(stockSymbol).orElseThrow(() -> new StockNotFoundException(stockSymbol));
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+
+        StockHistory stockHistory = stockHistoryRepository.findByStockIdAndDate(stock.getId(), portfolio.getCurrentDate());
+        stock.setCurrentPrice(stockHistory.getPrice());
+        return stockHistory.getPrice();
     }
 }

@@ -12,4 +12,5 @@ import java.util.List;
 public interface StockTransactionRepository extends JpaRepository<StockTransaction, Integer> {
     List<StockTransaction> findAllByStockId(Integer stockId);
     List<StockTransaction> findByPortfolioIdAndStockId(Integer portfolioId, Integer stockId);
+    List<StockTransaction> findByPortfolioId(Integer portfolioId);
 }
