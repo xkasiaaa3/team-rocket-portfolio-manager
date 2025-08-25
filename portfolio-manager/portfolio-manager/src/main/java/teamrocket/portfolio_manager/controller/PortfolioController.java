@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import teamrocket.portfolio_manager.entity.Portfolio;
+import teamrocket.portfolio_manager.entity.PortfolioHistory;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
 import teamrocket.portfolio_manager.service.PortfolioService;
@@ -31,7 +32,8 @@ public class PortfolioController {
     }
     @GetMapping("/{portfolioId}")
     @ResponseStatus(HttpStatus.OK)
-    public void getAllStockPerformancesByPortfolioId(@PathVariable int portfolioId) {
+    public List<PortfolioHistory> getPortfolioHistories(@PathVariable int portfolioId) {
+        return portfolioService.getPortfolioHistories(portfolioId);
     }
     @GetMapping("/{portfolioId}/balance")
     @ResponseStatus(HttpStatus.OK)
@@ -49,10 +51,10 @@ public class PortfolioController {
             return portfolioService.getPortfolioTransactionsBySymbol(portfolioId, stockId);
         }
     }
-    @GetMapping("/owned")
+    @GetMapping("/{portfolioId}/stocks")
     @ResponseStatus(HttpStatus.OK)
-    public List<Stock> getAllOwnedStocks() {
-        return null;
+    public List<Stock> getOwnedStocks(@PathVariable int portfolioId) {
+        return portfolioService.getPortfolioStocks(portfolioId);
     }
 
     // Update
