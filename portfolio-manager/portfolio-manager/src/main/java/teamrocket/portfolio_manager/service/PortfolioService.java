@@ -45,7 +45,7 @@ public class PortfolioService {
 
     public BigDecimal updatePortfolioBalance(Integer portfolioId, BigDecimal changeInBalance) {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
-        portfolio.setBalance(portfolio.getBalance().add(changeInBalance));
+        portfolio.addBalance(changeInBalance);
         portfolioRepository.save(portfolio);
         return portfolio.getBalance();
     }
@@ -69,6 +69,8 @@ public class PortfolioService {
         checkEnoughBalance(stock.getCurrentPrice(), amount, portfolio.getBalance());
         StockTransaction stockTransaction = stockTransactionRepository.save(
                 new StockTransaction(stockId, portfolioId, portfolio.getCurrentDate(), amount, Action.BUYING, stock.getCurrentPrice()));
+        portfolio.subtractBalance(stock.getCurrentPrice().multiply(amount));
+        portfolioRepository.save(portfolio);
         return stockTransaction;
     }
 
@@ -78,6 +80,8 @@ public class PortfolioService {
         checkStockAmount(stockId, portfolioId, amount);
         StockTransaction stockTransaction = stockTransactionRepository.save(new StockTransaction(
                 stockId, portfolioId, portfolio.getCurrentDate(), amount, Action.SELLING, stock.getCurrentPrice()));
+        portfolio.addBalance(stock.getCurrentPrice().multiply(amount));
+        portfolioRepository.save(portfolio);
         return stockTransaction;
     }
 

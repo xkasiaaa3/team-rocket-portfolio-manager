@@ -28,6 +28,12 @@ public class Portfolio {
 
     private Date currentPortfolioDate;
 
+    public Portfolio(Integer id, String name, BigDecimal balance) {
+        this.id = id;
+        this.name = name;
+        this.balance = balance;
+    }
+
     public Date getCurrentDate() {
         return currentPortfolioDate;
     }
@@ -74,6 +80,12 @@ public class Portfolio {
     }
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+    public void addBalance(BigDecimal amount) {
+        this.balance.add(amount);
+    }
+    public void subtractBalance(BigDecimal amount) {
+        this.balance.subtract(amount);
     }
     public void setStockTransactions(List<StockTransaction> stockTransactions) {
         this.stockTransactions = stockTransactions;
