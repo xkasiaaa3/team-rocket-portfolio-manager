@@ -130,7 +130,7 @@ public class PortfolioService {
         // Add today's networth to the portfolio history, then move forward one day and update stock prices
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         updatePortfolioHistory(portfolioId);
-        portfolio.forwardNextDay();
+        portfolio.forwardNextWeekDay();
         List<Stock> stocks = stockRepository.findAll();
         for (Stock s : stocks) {
             BigDecimal newPrice = stockHistoryRepository.findByStockIdAndDate(s.getId(), portfolio.getCurrentDate()).getPrice();

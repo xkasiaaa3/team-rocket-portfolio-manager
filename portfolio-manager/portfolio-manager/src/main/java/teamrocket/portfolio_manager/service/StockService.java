@@ -1,8 +1,12 @@
 package teamrocket.portfolio_manager.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import teamrocket.portfolio_manager.entity.Portfolio;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockHistory;
@@ -14,6 +18,7 @@ import teamrocket.portfolio_manager.repository.StockRepository;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +31,8 @@ public class StockService {
     StockHistoryRepository stockHistoryRepository;
     @Autowired
     PortfolioRepository portfolioRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public List<Stock> getAllStocks() {
         List<Stock> stocks = stockRepository.findAll();
@@ -64,6 +71,50 @@ public class StockService {
         BigDecimal previousPrice = previousStockHistory.getPrice();
 
         return (currentPrice.doubleValue() - previousPrice.doubleValue()) / previousPrice.doubleValue();
+
+    }
+
+    @Transactional
+    public void updateStocks() {
+        clean();
+        updateStocksFromCsv();
+
+        List<Stock> stocks = stockRepository.findAll();
+        Date currentDate = portfolioRepository.findAll().stream().findFirst().get().getCurrentDate();
+
+        stocks.forEach(stock -> {
+            updateHistoryForStock(stock.getStockSymbol().toUpperCase(), stock.getId());
+
+            StockHistory stockHistory = stockHistoryRepository.findByStockIdAndDate(stock.getId(), currentDate);
+            stock.setCurrentPrice(stockHistory != null ? stockHistory.getPrice() : null);
+            stockRepository.save(stock);
+
+        });
+
+
+    }
+
+    @Transactional
+    private void updateHistoryForStock(String stockSymbol, Integer stockId) {
+
+        try {
+            int updated = entityManager.createNativeQuery("INSERT INTO stock_history(stock_id, date, price) SELECT " + stockId + ", price, open FROM CSVREAD('portfolio-manager/data/stock_data/" + stockSymbol + ".csv', NULL, 'charset=UTF-8') OFFSET 2;").executeUpdate();
+            System.out.println("Updated rows: [" + updated + "] for stock " + stockSymbol);
+        } catch (Exception e) {
+            System.out.println("Problem with updating stock " + stockSymbol);
+        }
+
+    }
+
+    @Transactional
+    private void clean() {
+        stockRepository.deleteAll();
+        stockHistoryRepository.deleteAll();
+    }
+
+    @Transactional
+    private void updateStocksFromCsv() {
+        stockRepository.updateStocksFromCsv();
     }
 
     public BigDecimal updateStockPrice(String stockSymbol, Integer portfolioId) {

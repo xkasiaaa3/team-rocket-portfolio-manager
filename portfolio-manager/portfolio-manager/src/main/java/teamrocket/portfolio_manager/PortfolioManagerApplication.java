@@ -32,29 +32,5 @@ public class PortfolioManagerApplication {
 		};
 	}
 
-	@Bean
-	CommandLineRunner initStockDatabase(StockRepository stockRepository) {
-		return args -> {
-			if (stockRepository.findAll().isEmpty()) {
-				stockRepository.save(new Stock("A", "AOIWDJN", "USD", new BigDecimal("142.35")));
-				stockRepository.save(new Stock("B", "Unjais", "USD", new BigDecimal("173.35")));
-				stockRepository.save(new Stock("C", "Maiuea", "USD", new BigDecimal("163.35")));
-				stockRepository.save(new Stock("D", "Amavns", "USD", new BigDecimal("172.35")));
-			}
-		};
-	}
 
-	@Bean
-	CommandLineRunner initStockTransactionDatabase(StockTransactionRepository stockTransactionRepository) {
-		return args -> {
-			if (stockTransactionRepository.findAll().isEmpty()) {
-				stockTransactionRepository.save(new StockTransaction(
-						1, 1, new Date(), new BigDecimal("15"), Action.BUYING, new BigDecimal("142.35")));
-				stockTransactionRepository.save(new StockTransaction(
-						1, 1, new Date(), new BigDecimal("18"), Action.BUYING, new BigDecimal("135.35")));
-				stockTransactionRepository.save(new StockTransaction(
-						2, 1, new Date(), new BigDecimal("14"), Action.BUYING, new BigDecimal("173.35")));
-			}
-		};
-	}
 }

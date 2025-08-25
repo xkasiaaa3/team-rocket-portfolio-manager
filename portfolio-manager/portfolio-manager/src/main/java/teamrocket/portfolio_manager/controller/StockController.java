@@ -24,7 +24,14 @@ public class StockController {
     public List<Stock> getAllStocks(){
         return stockService.getAllStocks();
     }
-    @GetMapping("/{stockSymbol}/history")
+
+    @GetMapping("/update")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateStocks(){
+        stockService.updateStocks();
+    }
+
+    @GetMapping("/history/{stockSymbol}")
     @ResponseStatus(HttpStatus.OK)
     public List<StockHistory> getStockHistoryBySymbol(@PathVariable String stockSymbol){
         return stockService.getStockHistoryBySymbol(stockSymbol);
