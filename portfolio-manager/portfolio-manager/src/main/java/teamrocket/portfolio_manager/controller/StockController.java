@@ -21,7 +21,7 @@ public class StockController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Stock> getAllValidStocks(){
-        return stockService.getAllValidStocks();
+        return stockService.getAllStocks();
     }
 
     @GetMapping("/update")

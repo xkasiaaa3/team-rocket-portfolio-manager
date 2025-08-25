@@ -1,9 +1,6 @@
 package teamrocket.portfolio_manager.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import teamrocket.portfolio_manager.model.Action;
 
@@ -15,10 +12,12 @@ public class StockTransaction {
     @Id
     @GeneratedValue
     private Integer id;
-    @Column(nullable = false)
-    private Integer stockId;
-    @Column(nullable = false)
-    private Integer portfolioId;
+    @ManyToOne
+    @JoinColumn(name = "stock_id", nullable = false)
+    private Stock stock;
+    @ManyToOne
+    @JoinColumn(name = "portfolio_id", nullable = false)
+    private Portfolio portfolio;
     private Date date;
     @Positive
     private BigDecimal amount;
@@ -30,9 +29,9 @@ public class StockTransaction {
 
     private BigDecimal actionPrice;
 
-    public StockTransaction(Integer stockId, Integer portfolioId, Date date, BigDecimal amount, Action action, BigDecimal actionPrice) {
-        this.stockId = stockId;
-        this.portfolioId = portfolioId;
+    public StockTransaction(Stock stock, Portfolio portfolio, Date date, BigDecimal amount, Action action, BigDecimal actionPrice) {
+        this.stock = stock;
+        this.portfolio = portfolio;
         this.date = date;
         this.amount = amount;
         this.action = action;
@@ -58,11 +57,11 @@ public class StockTransaction {
         return action;
     }
 
-    public Integer getStockId() {
-        return stockId;
+    public Stock getStock() {
+        return stock;
     }
 
-    public Integer getPortfolioId() {
-        return portfolioId;
+    public Portfolio getPortfolio() {
+        return portfolio;
     }
 }

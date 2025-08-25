@@ -20,9 +20,9 @@ public class Portfolio {
     private Integer id;
     private String name;
     @Positive
-    private BigDecimal balance;;
-    @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<StockTransaction> stockTransactions;
+    private BigDecimal balance;
+//    @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+//    private List<StockTransaction> stockTransactions;
     @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PortfolioHistory> portfolioHistories;
 
@@ -68,9 +68,9 @@ public class Portfolio {
     public BigDecimal getBalance() {
         return balance;
     }
-    public List<StockTransaction> getStockTransactions() {
-        return stockTransactions;
-    }
+//    public List<StockTransaction> getStockTransactions() {
+//        return stockTransactions;
+//    }
     public List<PortfolioHistory> getPortfolioHistories() {
         return portfolioHistories;
     }
@@ -87,9 +87,9 @@ public class Portfolio {
     public void subtractBalance(BigDecimal amount) {
         this.balance.subtract(amount);
     }
-    public void setStockTransactions(List<StockTransaction> stockTransactions) {
-        this.stockTransactions = stockTransactions;
-    }
+//    public void setStockTransactions(List<StockTransaction> stockTransactions) {
+//        this.stockTransactions = stockTransactions;
+//    }
     public void setPortfolioHistories(List<PortfolioHistory> portfolioHistories) {
         this.portfolioHistories = portfolioHistories;
     }

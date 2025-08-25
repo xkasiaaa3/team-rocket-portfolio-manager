@@ -32,6 +32,10 @@ public class StockService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public List<Stock> getAllStocks() {
+        return stockRepository.findAll();
+    }
+
     public List<Stock> getAllValidStocks() {
         List<Stock> stocks = stockRepository.findByCurrentPriceIsNotNull();
         stocks.sort(Comparator.comparing(Stock::getStockName));
