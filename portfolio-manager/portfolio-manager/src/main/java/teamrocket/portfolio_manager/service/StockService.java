@@ -85,8 +85,6 @@ public class StockService {
             stockRepository.save(stock);
 
         });
-
-
     }
 
     @Transactional
@@ -110,15 +108,5 @@ public class StockService {
     @Transactional
     private void updateStocksFromCsv() {
         stockRepository.updateStocksFromCsv();
-    }
-
-    public BigDecimal updateStockPrice(String stockSymbol, Integer portfolioId) {
-        Stock stock = stockRepository.findByStockSymbol(stockSymbol).orElseThrow(() -> new StockNotFoundException(stockSymbol));
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
-
-        StockHistory stockHistory = stockHistoryRepository.findByStockIdAndDate(stock.getId(), portfolio.getCurrentDate());
-        stock.setCurrentPrice(stockHistory.getPrice());
-        stockRepository.save(stock);
-        return stock.getCurrentPrice();
     }
 }

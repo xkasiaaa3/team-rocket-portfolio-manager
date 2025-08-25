@@ -139,10 +139,11 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         updatePortfolioHistory(portfolioId);
         portfolio.forwardNextWeekDay();
+        portfolioRepository.save(portfolio);
         List<Stock> stocks = stockRepository.findAll();
         for (Stock s : stocks) {
-            BigDecimal newPrice = stockHistoryRepository.findByStockIdAndDate(s.getId(), portfolio.getCurrentDate()).getPrice();
-            s.setCurrentPrice(newPrice);
+            StockHistory stockHistory = stockHistoryRepository.findByStockIdAndDate(s.getId(), portfolio.getCurrentDate());
+            if (stockHistory != null) s.setCurrentPrice(stockHistory.getPrice());
         }
         stockRepository.saveAll(stocks);
         return portfolio.getCurrentDate();
