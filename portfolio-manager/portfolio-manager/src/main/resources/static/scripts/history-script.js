@@ -5,7 +5,7 @@ document.querySelector('.hamburger').addEventListener('click', () => {
 });
 
 document.getElementById('nextBtn').addEventListener('click', () => {
-  if (currentPage * itemsPerPage < stocks.length) {
+  if (currentPage * itemsPerPage < filteredTransactions.length) {
     currentPage++;
     renderListPage(currentPage);
   }
@@ -150,7 +150,8 @@ async function renderRight(portfolioNetworth, balance, amountInvested, profit) {
 }
 
 function renderTransactions(transactions) {
-    const transactionsList = document.querySelector('#transactions-list');
+    const transactionsList = document.querySelector("#transactions-list");
+    transactionsList.innerHTML = "";
     for (const t of transactions) {
         const li = document.createElement("li");
         if (t.action === "BUYING") {

@@ -76,6 +76,7 @@ async function renderRight(portfolioNetworth, balance, amountInvested, profit) {
 
 function renderTransactions(transactions) {
     const transactionsList = document.querySelector('#transactions-list');
+    transactionsList.innerHTML = "";
     for (const t of transactions) {
         const li = document.createElement("li");
         if (t.action === "BUYING") {
