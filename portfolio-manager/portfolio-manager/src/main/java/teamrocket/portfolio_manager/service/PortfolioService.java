@@ -144,20 +144,11 @@ public class PortfolioService {
     }
 
     public double getPortfolioNetworthChange(Integer portfolioId) {
-        // FIX FOR PREVIOUS DAY IS WEEKEND
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
 
-        int dateDifference = 1;
-
-        Date currentDate = portfolio.getCurrentDate();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.DAY_OF_MONTH, -dateDifference);
-        Date previousDate = calendar.getTime();
-
         BigDecimal currentNetworth = getPortfolioNetworth(portfolioId);
-        PortfolioHistory previousPortfolioHistory = portfolioHistoryRepository.findByPortfolioIdAndDate(portfolioId, previousDate);
-        BigDecimal previousNetworth = previousPortfolioHistory.getNetworth();
+        Optional<PortfolioHistory> previousPortfolioHistory = portfolioHistoryRepository.findFirstByPortfolioIdAndDateLessThanEqualOrderByDateDesc(portfolioId,portfolio.getCurrentDate());
+        BigDecimal previousNetworth = previousPortfolioHistory.isPresent() ? previousPortfolioHistory.get().getNetworth() : currentNetworth;
 
         return (currentNetworth.doubleValue() - previousNetworth.doubleValue()) / previousNetworth.doubleValue();
     }
@@ -196,7 +187,7 @@ public class PortfolioService {
             case SELLING -> {
                 return sellStock(stockId, portfolioId, amount);
             }
-            default -> throw new RuntimeException();
+            default -> throw new InvalidActionException();
         }
     }
 
