@@ -37,6 +37,13 @@ public class PortfolioController {
     public BigDecimal getPortfolioNetworth(@PathVariable Integer portfolioId) {
         return portfolioService.getPortfolioNetworth(portfolioId);
     }
+
+    @GetMapping("/{portfolioId}/change")
+    @ResponseStatus(HttpStatus.OK)
+    public double getPortfolioNetworthChange(@PathVariable Integer portfolioId) {
+        return portfolioService.getPortfolioNetworthChange(portfolioId);
+    }
+
     @GetMapping("/{portfolioId}/histories")
     @ResponseStatus(HttpStatus.OK)
     public List<PortfolioNetworthDTO> getPortfolioHistories(@PathVariable Integer portfolioId) {
