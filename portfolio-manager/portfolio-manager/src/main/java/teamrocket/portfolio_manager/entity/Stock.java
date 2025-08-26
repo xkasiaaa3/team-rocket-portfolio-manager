@@ -19,11 +19,11 @@ public class Stock {
     @Positive
     private BigDecimal currentPrice;
 
-    @OneToMany(mappedBy = "stockId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<StockTransaction> stockTransactions;
+//    @OneToMany(mappedBy = "stockId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+//    private List<StockTransaction> stockTransactions;
 
-    @OneToMany(mappedBy = "stockId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<StockHistory> stockHistory;
+//    @OneToMany(mappedBy = "stockId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+//    private List<StockHistory> stockHistory;
 
     public Stock() {}
     public Stock(String stockSymbol, String stockName, String currency, BigDecimal currentPrice) {
@@ -41,7 +41,7 @@ public class Stock {
         this.currentPrice = currentPrice;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
     public String getStockSymbol() {

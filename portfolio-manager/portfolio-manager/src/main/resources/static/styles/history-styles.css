@@ -13,13 +13,13 @@
   --loss-color: #e74c3c;
 }
 
-.stocks-section {
+.history-section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.stock-controls {
+.history-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -27,7 +27,7 @@
   margin-bottom: 1rem;
 }
 
-.stock-controls input {
+.history-controls input {
   flex: 1;
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -47,12 +47,12 @@
   font-size: 1rem;
 }
 
-.stock-list {
+.history-list {
   list-style: none;
   padding: 0;
 }
 
-.stock-list li {
+.history-list li {
   padding: 0.75rem;
   background-color: var(--card-bg);
   border-radius: 6px;
@@ -62,12 +62,12 @@
   justify-content: space-between;
 }
 
-.stock-item {
+.history-item {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
-.stock-item:hover {
+.history-item:hover {
   background-color: var(--hover-bg);
 }
 

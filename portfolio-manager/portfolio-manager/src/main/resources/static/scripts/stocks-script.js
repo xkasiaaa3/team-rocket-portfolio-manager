@@ -1,20 +1,88 @@
-const stockItems = document.querySelectorAll('.stock-item');
-const modal = document.getElementById('stockModal');
-const closeBtn = document.querySelector('.close-button');
-const stockTitle = document.getElementById('stockTitle');
-const stockChart = document.getElementById('stockChart');
+const base = "http://localhost:8080"
 
-stockItems.forEach(item => {
-  item.addEventListener('click', () => {
-    const symbol = item.dataset.symbol;
-    stockTitle.textContent = `${item.textContent}`;
-    showModal(symbol);
-  });
+document.querySelector('.hamburger').addEventListener('click', () => {
+  alert('Open portfolio selector or add new portfolio');
+});
+document.querySelector('.user').addEventListener('click', () => {
+  alert('Open user settings or profile');
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (currentPage * itemsPerPage < stocks.length) {
+    currentPage++;
+    renderListPage(currentPage);
+  }
+});
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (currentPage > 1) {
+    currentPage--;
+    renderListPage(currentPage);
+  }
 });
 
-closeBtn.addEventListener('click', () => {
-  modal.classList.add('hidden');
-});
+let stocks = [];
+async function loadStocks() {
+    const res = await fetch(base + `/stocks`);
+    const data = await res.json();
+    stocks = data;
+    console.log(stocks);
+}
+
+const itemsPerPage = 10;
+let currentPage = 1;
+
+renderPage();
+
+async function renderPage(portfolioId = 1) {
+    const portfolios = await fetchPortfolios();
+    const currentPortfolio = portfolios[portfolioId-1];
+
+    const pageTitle = document.querySelector('.portfolio-name');
+    pageTitle.textContent = currentPortfolio.name;
+
+    await loadStocks();
+
+    renderListPage(currentPage);
+}
+
+function renderListPage(page) {
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageStocks = stocks.slice(start, end);
+    console.log(pageStocks);
+
+    const container = document.getElementById('stockList');
+    container.innerHTML = ''; // clear previous items
+    pageStocks.forEach(stock => {
+    const li = document.createElement('li');
+    li.className = 'stock-item';
+    li.textContent = stock.stockSymbol +' '+ stock.stockName +' $'+ stock.currentPrice;
+    container.appendChild(li);
+    });
+
+    document.getElementById('pageInfo').textContent = `Page ${page}`;
+
+    const stockItems = document.querySelectorAll('.stock-item');
+    const modal = document.getElementById('stockModal');
+    const closeBtn = document.querySelector('.close-button');
+    const stockTitle = document.getElementById('stockTitle');
+    const stockChart = document.getElementById('stockChart');
+    stockItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const symbol = item.dataset.symbol;
+        stockTitle.textContent = `${item.textContent}`;
+        showModal(symbol);
+      });
+    });
+    closeBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+}
+
+async function fetchPortfolios() {
+    const res = await fetch(base + `/portfolios`);
+    const portfolios = await res.json();
+    return portfolios;
+}
 
 function showModal(symbol) {
   modal.classList.remove('hidden');

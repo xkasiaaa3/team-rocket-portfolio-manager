@@ -9,6 +9,7 @@ import teamrocket.portfolio_manager.service.StockService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/stocks")
 public class StockController {

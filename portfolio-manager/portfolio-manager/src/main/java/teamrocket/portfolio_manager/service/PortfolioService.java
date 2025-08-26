@@ -51,8 +51,8 @@ public class PortfolioService {
     }
 
     public List<StockTransaction> getPortfolioTransactions(Integer portfolioId) {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
-        return portfolio.getStockTransactions();
+//        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+        return stockTransactionRepository.findByPortfolioId(portfolioId);
     }
 
     public List<StockTransaction> getPortfolioTransactionsBySymbol(Integer portfolioId, Integer stockId) {
@@ -68,7 +68,7 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         checkEnoughBalance(stock.getCurrentPrice(), amount, portfolio.getBalance());
         StockTransaction stockTransaction = stockTransactionRepository.save(
-                new StockTransaction(stockId, portfolioId, portfolio.getCurrentDate(), amount, Action.BUYING, stock.getCurrentPrice()));
+                new StockTransaction(stock, portfolio, portfolio.getCurrentDate(), amount, Action.BUYING, stock.getCurrentPrice()));
         portfolio.subtractBalance(stock.getCurrentPrice().multiply(amount));
         portfolioRepository.save(portfolio);
         return stockTransaction;
@@ -79,7 +79,7 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         checkStockAmount(stockId, portfolioId, amount);
         StockTransaction stockTransaction = stockTransactionRepository.save(new StockTransaction(
-                stockId, portfolioId, portfolio.getCurrentDate(), amount, Action.SELLING, stock.getCurrentPrice()));
+                stock, portfolio, portfolio.getCurrentDate(), amount, Action.SELLING, stock.getCurrentPrice()));
         portfolio.addBalance(stock.getCurrentPrice().multiply(amount));
         portfolioRepository.save(portfolio);
         return stockTransaction;
@@ -106,7 +106,7 @@ public class PortfolioService {
     public List<Stock> getPortfolioStocks(Integer portfolioId) {
         List<StockTransaction> transactions = stockTransactionRepository.findByPortfolioId(portfolioId);
         HashSet<Integer> portfolioStockIds = new HashSet<>();
-        transactions.forEach(t -> portfolioStockIds.add(t.getStockId()));
+        transactions.forEach(t -> portfolioStockIds.add(t.getStock().getId()));
         List<Stock> stocks = new ArrayList<>();
         portfolioStockIds.forEach(i -> {
             if (checkStockAmount(i, portfolioId, BigDecimal.ZERO).compareTo(BigDecimal.ZERO) > 0) {

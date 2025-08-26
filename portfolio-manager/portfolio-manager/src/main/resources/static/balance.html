@@ -36,25 +36,39 @@
 
     <!-- Column 2: Balance Display -->
     <section class="portfolio balance-section">
-        <div class="funds-display">€12,450.00</div>
+        <div class="funds-display"></div>
         <div class="funds-actions">
-            <button class="action-button">
+            <button class="action-button plus">
                 <i class="fas fa-plus"></i> Add Funds
             </button>
-            <button class="action-button">
+            <div id="addFundsModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-plus">&times;</span>
+                    <h2>Add Funds</h2>
+                    <label for="addFundsInput">Amount:</label>
+                    <input type="number" id="addFundsInput" step="0.01" min="0.01" placeholder="0.00" />
+                    <button id="submitAddFunds">Submit</button>
+                </div>
+            </div>
+            <button class="action-button minus">
                 <i class="fas fa-minus"></i> Remove Funds
             </button>
+            <div id="withdrawFundsModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-minus">&times;</span>
+                    <h2>Withdraw Funds</h2>
+                    <label for="withdrawFundsInput">Amount:</label>
+                    <input type="number" id="withdrawFundsInput" step="0.01" min="0.01" placeholder="0.00" />
+                    <button id="submitWithdrawFunds">Submit</button>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Column 3: Recent Transactions -->
     <aside class="market">
         <h3>Recent Transactions</h3>
-        <ul>
-            <li>+ €500.00 — Deposit</li>
-            <li>- €250.00 — Buy AAPL</li>
-            <li>+ €120.00 — Dividend MSFT</li>
-            <li>- €300.00 — Buy TSLA</li>
+        <ul id="transactions-list">
         </ul>
     </aside>
 </main>

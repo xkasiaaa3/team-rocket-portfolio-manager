@@ -11,8 +11,9 @@ public class StockHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(nullable = false)
-    private Integer stockId;
+    @ManyToOne
+    @JoinColumn(name = "stock_id", nullable = false)
+    private Stock stock;
     private Date date;
     @Positive
     private BigDecimal price;
