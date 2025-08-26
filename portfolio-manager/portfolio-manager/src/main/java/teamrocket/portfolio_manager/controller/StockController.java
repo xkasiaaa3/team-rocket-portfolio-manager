@@ -34,7 +34,7 @@ public class StockController {
     @GetMapping("/{stockId}/history")
     @ResponseStatus(HttpStatus.OK)
     public List<StockHistory> getStockHistoryBySymbol(@PathVariable Integer stockId){
-        return stockService.getStockHistoryByStockId(stockId);
+        return stockService.getStockHistoryByStockIdForLastMonth(stockId);
     }
     @GetMapping("/{stockId}/change")
     @ResponseStatus(HttpStatus.OK)

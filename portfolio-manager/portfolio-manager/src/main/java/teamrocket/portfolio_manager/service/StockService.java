@@ -47,8 +47,14 @@ public class StockService {
         return stock.getId();
     }
 
-    public List<StockHistory> getStockHistoryByStockId(Integer stockId) {
-        List<StockHistory> stockHistories = stockHistoryRepository.findAllByStockId(stockId);
+    public List<StockHistory> getStockHistoryByStockIdForLastMonth(Integer stockId) {
+        Date currentDate = portfolioRepository.findAll().stream().findFirst().get().getCurrentDate();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.MONTH, -1);
+        Date previousDate = calendar.getTime();
+
+        List<StockHistory> stockHistories = stockHistoryRepository.findAllByStockIdAndDateBetween(stockId,previousDate,currentDate);
         stockHistories.sort(Comparator.comparing(StockHistory::getDate));
         return stockHistories;
     }

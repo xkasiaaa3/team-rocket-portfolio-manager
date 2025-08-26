@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface StockHistoryRepository extends JpaRepository<StockHistory, Integer> {
-    List<StockHistory> findAllByStockId(Integer stock_id);
+    List<StockHistory> findAllByStockIdAndDateBetween(Integer stockId, Date startDate, Date endDate);
     StockHistory findByStockIdAndDate(int id, Date date);
 
     boolean existsByDate(Date date);
