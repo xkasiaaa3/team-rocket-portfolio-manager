@@ -47,6 +47,12 @@
   font-size: 1rem;
 }
 
+.history-section{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .history-list {
   list-style: none;
   padding: 0;

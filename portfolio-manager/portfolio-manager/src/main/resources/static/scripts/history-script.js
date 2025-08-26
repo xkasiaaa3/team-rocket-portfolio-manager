@@ -32,16 +32,40 @@ async function forwardDay() {
 let portfolioId = 1;
 
 let transactions = [];
+let filteredTransactions = [];
 async function loadTransactions() {
     const res = await fetch(base + `/portfolios/${portfolioId}/transactions`);
     const data = await res.json();
     transactions = data.reverse();
+    filteredTransactions = transactions;
 }
 
 const itemsPerPage = 10;
 let currentPage = 1;
 
 renderPage();
+
+const searchBar = document.getElementById("searchBar");
+const sortOrder = document.getElementById("sortOrder");
+searchBar.addEventListener("input", async () => sortTransactions());
+sortOrder.addEventListener("change", async () => sortTransactions());
+
+function sortTransactions() {
+    const searchTerm = searchBar.value.toLowerCase();
+    const sort = sortOrder.value;
+
+    filteredTransactions = transactions.filter(t => {
+        return t.stock.stockSymbol.toLowerCase().includes(searchTerm);
+    });
+
+    if (sort === "symbol") {
+        filteredTransactions.sort((a, b) => a.stock.stockSymbol.localeCompare(b.stock.stockSymbol));
+    } else if (sort === "old") {
+        filteredTransactions.sort((a, b) => a.date.localeCompare(b.date));
+    }
+
+    renderListPage(currentPage);
+}
 
 async function renderPage() {
     const portfolios = await fetchPortfolios();
@@ -61,35 +85,44 @@ async function renderPage() {
 function renderListPage(page) {
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    const pageTransactions = transactions.slice(start, end);
+    const pageTransactions = filteredTransactions.slice(start, end);
 
-    const container = document.getElementById('history-list');
-    container.innerHTML = ''; // clear previous items
+    const container = document.querySelector('#history-list tbody');
+    container.innerHTML = '';
     pageTransactions.forEach(t => {
-        const li = document.createElement('li');
-        li.className = 'history-item';
+        const tr = document.createElement('tr');
+        tr.className = 'history-item';
 
-        const sAmount = document.createElement("span");
-        sAmount.className = "amount";
-        const sDate = document.createElement("span");
-        sDate.className = "date";
-        sDate.textContent = t.date.slice(0,10);
-        const sPrice = document.createElement("span");
-        sPrice.className = "price";
-        sPrice.textContent = "$" + t.actionPrice;
-        const sChange = document.createElement("span");
-        sChange.className = "change";
-        sChange.textContent = "%CHANGE";
+        const change = (t.stock.currentPrice - t.actionPrice) * 100 / t.actionPrice;
 
+        const sChange = document.createElement("td");
+        const sAmount = document.createElement("td");
         if (t.action === "BUYING") {
-            li.style.color = "green";
-            sAmount.textContent = "+" + t.amount + " " + t.stock.stockSymbol;
+            if (change > 0) {
+                sChange.style.color = "green";
+                sChange.textContent = "+";
+            } else if (change < 0) {
+                sChange.style.color = "red";
+            }
+            sAmount.style.color = "green";
+            sAmount.textContent = "+" + t.amount;
         } else {
-            li.style.color = "red";
-            sAmount.textContent = "-" + t.amount + " " + t.stock.stockSymbol;
+            if (change < 0) {
+                sChange.style.color = "green";
+            } else if (change > 0) {
+                sChange.style.color = "red";
+                sChange.textContent = "+";
+            }
+            sAmount.style.color = "red";
+            sAmount.textContent = "-" + t.amount;
         }
-        li.append(sAmount, sDate, sPrice, sChange);
-        container.appendChild(li);
+        sChange.textContent += change.toFixed(2)+"%";
+
+        tr.appendChild(sAmount);
+        tr.innerHTML += '<td>'+t.stock.stockSymbol+'</td>' + '<td>'+t.date.slice(0,10)+'</td>' +
+            '<td>$'+t.actionPrice+'</td>' + '<td>$'+t.stock.currentPrice+'</td>';
+        tr.appendChild(sChange);
+        container.appendChild(tr);
     });
 
     document.getElementById('pageInfo').textContent = `Page ${page}`;

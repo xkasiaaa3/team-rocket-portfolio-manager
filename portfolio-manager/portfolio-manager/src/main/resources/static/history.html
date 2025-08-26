@@ -40,29 +40,44 @@
     </nav>
 
     <!-- Column 2: Middle Content -->
-    <section class="portfolio">
+    <section class="portfolio history-section">
         <div class="history-controls">
             <input type="text" id="searchBar" placeholder="Search transactions..." />
             <div class="filters">
                 <select id="sortOrder">
-                    <option value="name">Sort by Name</option>
-                    <option value="gain">Sort by Date</option>
+                    <option value="default">Sort by most recent</option>
+                    <option value="old">Sort by oldest</option>
+                    <option value="symbol">Sort by Symbol</option>
                 </select>
             </div>
         </div>
 
-        <ul id="history-list" class="history-list">
-            <!-- Example stock item -->
-            <li class="history-item" data-symbol="AAPL">
-                <span>Apple (AAPL)</span>
-                <span class="gain">+2.5%</span>
-            </li>
-        </ul>
+        <table id="history-list" class="history-list">
+            <colgroup>
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+                <col style="width: 16%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Symbol</th>
+                    <th>Date</th>
+                    <th>Transaction Price</th>
+                    <th>Current Price</th>
+                    <th>Change</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
         <div id="page-options">
-            <button id="prevBtn">Previous</button>
-            <span id="pageInfo"></span>
-            <button id="nextBtn">Next</button>
+            <button id="prevBtn"><i class="fas fa-angle-left"></i> Previous</button>
+            <strong><span id="pageInfo"></span></strong>
+            <button id="nextBtn">Next <i class="fas fa-angle-right"></i></button>
         </div>
     </section>
 
