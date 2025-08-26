@@ -68,6 +68,16 @@ public class PortfolioController {
     public List<Stock> getOwnedStocks(@PathVariable Integer portfolioId) {
         return portfolioService.getPortfolioStocks(portfolioId);
     }
+    @GetMapping("/{portfolioId}/money-invested")
+    @ResponseStatus(HttpStatus.OK)
+    public BigDecimal getMoneyInvested(@PathVariable Integer portfolioId) {
+        return portfolioService.getMoneyInvested(portfolioId);
+    }
+    @GetMapping("/{portfolioId}/profit")
+    @ResponseStatus(HttpStatus.OK)
+    public BigDecimal getProfit(@PathVariable Integer portfolioId) {
+        return portfolioService.getProfit(portfolioId);
+    }
 
     // Update
     @PutMapping("/{portfolioId}/forward-date")

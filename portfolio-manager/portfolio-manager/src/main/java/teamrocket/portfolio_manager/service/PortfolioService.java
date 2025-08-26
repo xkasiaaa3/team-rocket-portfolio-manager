@@ -194,4 +194,21 @@ public class PortfolioService {
     private boolean isMarketOpen(Date date) {
         return stockHistoryRepository.existsByDate(date);
     }
+
+    public BigDecimal getMoneyInvested(Integer portfolioId) {
+        List <StockTransaction> stocks = getPortfolioTransactions(portfolioId);
+        return stocks.stream()
+                .filter(st -> st.getAction() == Action.BUYING)
+                .map(st -> st.getAmount().multiply(st.getActionPrice()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal getProfit(Integer portfolioId) {
+        List <StockTransaction> stocks = getPortfolioTransactions(portfolioId);
+        BigDecimal sells = stocks.stream()
+                .filter(st -> st.getAction() == Action.SELLING)
+                .map(st -> st.getAmount().multiply(st.getActionPrice()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return getPortfolioNetworth(portfolioId).add(sells);
+    }
 }
