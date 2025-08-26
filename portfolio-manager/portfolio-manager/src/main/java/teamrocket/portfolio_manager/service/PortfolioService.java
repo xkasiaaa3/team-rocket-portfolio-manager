@@ -211,4 +211,9 @@ public class PortfolioService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return getPortfolioNetworth(portfolioId).add(sells);
     }
+
+    public Portfolio createPortfolio(String name) {
+        Portfolio portfolio = new Portfolio(name, BigDecimal.ZERO);
+        return portfolioRepository.save(portfolio);
+    }
 }

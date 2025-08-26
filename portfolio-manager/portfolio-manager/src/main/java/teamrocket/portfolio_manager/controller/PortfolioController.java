@@ -91,9 +91,16 @@ public class PortfolioController {
         System.out.println("The Change is: " + changeInBalance);
         return portfolioService.updatePortfolioBalance(portfolioId, changeInBalance);
     }
+
+    //Add
     @PostMapping("/{portfolioId}/transaction")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public StockTransaction addStockTransaction(@PathVariable Integer portfolioId, @RequestBody TransactionDTO transactionDTO) {
         return portfolioService.makeTransaction(portfolioId, transactionDTO);
+    }
+    @PostMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Portfolio createPortfolio(@RequestBody String name) {
+        return portfolioService.createPortfolio(name);
     }
 }
