@@ -11,15 +11,14 @@ import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockHistory;
 import teamrocket.portfolio_manager.exception.PortfolioNotFoundException;
 import teamrocket.portfolio_manager.exception.StockNotFoundException;
+import teamrocket.portfolio_manager.model.StockWithChangeDTO;
 import teamrocket.portfolio_manager.repository.PortfolioRepository;
 import teamrocket.portfolio_manager.repository.StockHistoryRepository;
 import teamrocket.portfolio_manager.repository.StockRepository;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StockService {
@@ -36,10 +35,27 @@ public class StockService {
         return stockRepository.findAll();
     }
 
-    public List<Stock> getAllValidStocks() {
+    public List<StockWithChangeDTO> getAllValidStocks() {
+        Date currentDate = portfolioRepository.findAll().stream().findFirst().get().getCurrentDate();
         List<Stock> stocks = stockRepository.findByCurrentPriceIsNotNull();
-//        stocks.sort(Comparator.comparing(Stock::getStockName));
-        return stocks;
+        List<StockHistory> allHistories = stockHistoryRepository.findAllStockHistoriesBeforeDateSorted(currentDate);
+        Map<Integer, StockHistory> latestHistories = new HashMap<>();
+        for (StockHistory stockHistory : allHistories) {
+            Integer stockId = stockHistory.getStock().getId();
+            if (!latestHistories.containsKey(stockId)) {
+                latestHistories.put(stockId, stockHistory);
+            }
+        }
+
+        return stocks.stream().map(s -> {
+            StockHistory stockHistory = latestHistories.get(s.getId());
+            BigDecimal currentPrice = s.getCurrentPrice();
+            BigDecimal previousPrice = stockHistory.getPrice();
+
+            double change = (currentPrice.doubleValue() - previousPrice.doubleValue()) / previousPrice.doubleValue();
+            return s.toDTO(change);
+        }).toList();
+
     }
 
     public Integer getStockId(String stockSymbol) {
@@ -59,22 +75,14 @@ public class StockService {
         return stockHistories;
     }
 
-    public double getStockChangeByStockId(Integer stockId, Integer portfolioId) {
+    public double getStockChangeByStockId(Integer stockId) {
         // FIX TO CATCH EXCEPTION WHEN PREVIOUS DAY IS WEEKEND
         Stock stock = stockRepository.findById(stockId).orElseThrow(() -> new StockNotFoundException(stockId));
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
-
-        int dateDifference = 1;
-
-        Date currentDate = portfolio.getCurrentDate();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.DAY_OF_MONTH, -dateDifference);
-        Date previousDate = calendar.getTime();
+        Date currentDate = portfolioRepository.findAll().stream().findFirst().get().getCurrentDate();
 
         BigDecimal currentPrice = stock.getCurrentPrice();
-        StockHistory previousStockHistory = stockHistoryRepository.findByStockIdAndDate(stock.getId(), previousDate);
-        BigDecimal previousPrice = previousStockHistory.getPrice();
+        Optional<StockHistory> previousStockHistory = stockHistoryRepository.findFirstByStockIdAndDateLessThanEqualOrderByDateDesc(stockId,currentDate);
+        BigDecimal previousPrice = previousStockHistory.isPresent() ? previousStockHistory.get().getPrice() : currentPrice;
 
         return (currentPrice.doubleValue() - previousPrice.doubleValue()) / previousPrice.doubleValue();
     }

@@ -2,6 +2,7 @@ package teamrocket.portfolio_manager.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
+import org.springframework.stereotype.Indexed;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -37,5 +38,9 @@ public class StockHistory {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public Stock getStock() {
+        return stock;
     }
 }

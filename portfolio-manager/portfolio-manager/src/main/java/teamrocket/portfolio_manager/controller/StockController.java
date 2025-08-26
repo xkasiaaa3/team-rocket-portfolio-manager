@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockHistory;
+import teamrocket.portfolio_manager.model.StockWithChangeDTO;
 import teamrocket.portfolio_manager.service.StockService;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class StockController {
     // Read
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Stock> getAllValidStocks(){
+    public List<StockWithChangeDTO> getAllValidStocks(){
         return stockService.getAllValidStocks();
     }
 
@@ -39,7 +40,6 @@ public class StockController {
     @GetMapping("/{stockId}/change")
     @ResponseStatus(HttpStatus.OK)
     public double getStockChangeBySymbol(@PathVariable Integer stockId){
-        // PORTFOLIO ID IS SET TO 1 CHANGE LATER
-        return stockService.getStockChangeByStockId(stockId, 1);
+        return stockService.getStockChangeByStockId(stockId);
     }
 }

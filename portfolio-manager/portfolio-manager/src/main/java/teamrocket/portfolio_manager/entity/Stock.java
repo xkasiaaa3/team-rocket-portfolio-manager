@@ -2,6 +2,7 @@ package teamrocket.portfolio_manager.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import teamrocket.portfolio_manager.model.StockWithChangeDTO;
 
 import javax.annotation.processing.Generated;
 import java.math.BigDecimal;
@@ -59,5 +60,9 @@ public class Stock {
 
     public void setCurrentPrice(BigDecimal currentPrice) {
         this.currentPrice = currentPrice;
+    }
+
+    public StockWithChangeDTO toDTO(double change){
+        return new StockWithChangeDTO(id,stockSymbol,stockName,currency,currentPrice,change);
     }
 }
