@@ -31,38 +31,59 @@ async function forwardDay() {
 }
 
 document.getElementById('buyButton').addEventListener('click', async () => {
-    const transactionDTO = {
-        stockId: currentStockId,
-        amount: document.getElementById('quantity').value,
-        action: "BUYING"
-    };
-    await fetch(base + `/portfolios/${portfolioId}/transaction`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(transactionDTO)
-    })
-    document.getElementById('quantity').value = '';
-    modal.classList.add('hidden');
-    renderPage();
+    const amount = document.getElementById('quantity').value;
+    if (confirm(
+        "Are you sure you want to buy "+amount+" shares of "+currentStock.stockName+"?\n"+
+        "This will cost $"+amount*currentStock.currentPrice+"\n"+
+        "Your balance is currently $"+currentPortfolio.balance
+        )) {
+        const transactionDTO = {
+            stockId: currentStock.id,
+            amount: amount,
+            action: "BUYING"
+        };
+        await fetch(base + `/portfolios/${portfolioId}/transaction`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(transactionDTO)
+        })
+        document.getElementById('quantity').value = '';
+        modal.classList.add('hidden');
+        renderPage();
+    } else {
+        document.getElementById('quantity').value = '';
+        modal.classList.add('hidden');
+    }
 });
 
 document.getElementById('sellButton').addEventListener('click', async () => {
-    const transactionDTO = {
-        stockId: currentStockId,
-        amount: document.getElementById('quantity').value,
-        action: "SELLING"
-    };
-    await fetch(base + `/portfolios/${portfolioId}/transaction`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(transactionDTO)
-    })
-    document.getElementById('quantity').value = '';
-    modal.classList.add('hidden');
-    renderPage();
+    const amount = document.getElementById('quantity').value;
+    if (confirm(
+        "Are you sure you want to sell "+amount+" shares of "+currentStock.stockName+"?\n"+
+        "This will add $"+amount*currentStock.currentPrice+" to your balance\n"+
+        "Your balance is currently $"+currentPortfolio.balance
+        )) {
+        const transactionDTO = {
+            stockId: currentStock.id,
+            amount: document.getElementById('quantity').value,
+            action: "SELLING"
+        };
+        await fetch(base + `/portfolios/${portfolioId}/transaction`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(transactionDTO)
+        })
+        document.getElementById('quantity').value = '';
+        modal.classList.add('hidden');
+        renderPage();
+    } else {
+        document.getElementById('quantity').value = '';
+        modal.classList.add('hidden');
+    }
 });
 
 let portfolioId = 1;
+let currentPortfolio;
 
 let stocks = [];
 let filteredStocks = [];
@@ -77,7 +98,7 @@ async function loadStocks() {
 const itemsPerPage = 10;
 let currentPage = 1;
 let currentPageStock = [];
-let currentStockId;
+let currentStock;
 
 const searchBar = document.getElementById("searchBar");
 const sortOrder = document.getElementById("sortOrder");
@@ -96,7 +117,7 @@ sortOrder.addEventListener("change", async () => sortStocks());
 
 async function renderPage() {
     const portfolios = await fetchPortfolios();
-    const currentPortfolio = portfolios[portfolioId-1];
+    currentPortfolio = portfolios[portfolioId-1];
 
     const pageTitle = document.querySelector('.portfolio-name');
     const pageDate = document.querySelector('.portfolio-date');
@@ -158,8 +179,9 @@ async function renderStockPage(stock) {
     tr.innerHTML += '<td>$'+stock.currentPrice+'</td>';
     tr.appendChild(td);
     tr.addEventListener('click', () => {
-        currentStockId = stock.id;
-        stockTitle.textContent = stock.stockName +' ('+stock.stockSymbol+') ';
+        currentStock = stock;
+        stockTitle.innerHTML = stock.stockName +' ('+stock.stockSymbol+')    '+
+            '--- $'+stock.currentPrice;
         showModal(stock);
     });
     container.appendChild(tr);
@@ -184,52 +206,38 @@ async function showModal(stock) {
 }
 
 function renderChart(histories) {
-    const nwData = histories.map(pair => ({x: pair.date.slice(5,10), y: pair.price}));
-  const ctx = stockChart.getContext('2d');
-  if (stockPerformChart) {
-    stockPerformChart.destroy();
-  }
-  stockPerformChart = new Chart(ctx, {
-      type: 'line',
-
-      // 1. Data: time-series points for net worth
+    const nwData = histories.map(pair => ({x: pair.date, y: pair.price}));
+    const ctx = stockChart.getContext('2d');
+    if (stockPerformChart) {
+        stockPerformChart.destroy();
+    }
+    stockPerformChart = new Chart(ctx, {
+        type: 'line',
         data: {
             datasets: [{
-              data: nwData,
-              fill: 'origin',                  // area under the line
-              borderColor: 'rgba(75,192,192,1)',
-              backgroundColor: 'rgba(75,192,192,0.2)',
-              pointRadius: 3,
-              tension: 0.2                    // smooth curves
+                data: nwData,
+                fill: 'origin',
+                borderColor: 'rgba(75,192,192,1)',
+                backgroundColor: 'rgba(75,192,192,0.2)',
+                pointRadius: 3,
+                tension: 0.2
             }]
         },
-
-        scales: {
-          x: {
-            type: 'time',
-            time: {
-              unit: 'day',
-              tooltipFormat: 'MMM yyyy'
-            },
-            title: { display: false, text: 'Date' }
-          },
-          y: {
-            beginAtZero: false,
-            title: { display: false, text: 'Net Worth (USD)' },
-            ticks: {
-              callback: value => '$' + value.toLocaleString()
-            }
-          }
-        },
-
         options: {
-        responsive: true,
-          legend: {
-            display: false
-          },
-        scales: {
-        y: { beginAtZero: false }
+            responsive: true,
+            plugins: {
+                legend: {display: false}
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {unit: 'day', tooltipFormat: 'MMM yyyy'}
+                },
+                y: {
+                    beginAtZero: false,
+                    ticks: {callback: value => '$' + value.toLocaleString()}
+                }
+            }
         }
-        }
-  });
+    });
 }
