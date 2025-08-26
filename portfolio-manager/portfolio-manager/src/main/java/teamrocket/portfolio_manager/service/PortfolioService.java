@@ -155,6 +155,9 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         updatePortfolioHistory(portfolioId);
         portfolio.forwardNextWeekDay();
+        while (!isMarketOpen(portfolio.getCurrentDate())){
+            portfolio.forwardNextWeekDay();
+        }
         portfolioRepository.save(portfolio);
         List<Stock> stocks = stockRepository.findAll();
         for (Stock s : stocks) {
@@ -177,5 +180,9 @@ public class PortfolioService {
             }
             default -> throw new RuntimeException();
         }
+    }
+
+    private boolean isMarketOpen(Date date){
+        return !stockHistoryRepository.findAllByDate(date).isEmpty();
     }
 }
