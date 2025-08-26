@@ -93,7 +93,8 @@ async function renderPage() {
     const pageTitle = document.querySelector('.portfolio-name');
     const pageDate = document.querySelector('.portfolio-date');
     pageTitle.textContent = currentPortfolio.name;
-    pageDate.textContent = currentPortfolio.currentDate.slice(0,10);
+    pageDate.textContent = new Date(currentPortfolio.currentDate).
+        toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'});
 
     await loadStocks();
 
@@ -119,7 +120,9 @@ async function renderStockPage(stock) {
     const li = document.createElement('li');
     li.className = 'stock-item';
     const change = (stock.change*100).toFixed(2);
-    li.textContent = stock.stockSymbol +' '+ stock.stockName +' $'+ stock.currentPrice + ' ' + change;
+    li.innerHTML += '<span>'+stock.stockName+' ('+stock.stockSymbol+')'+'</span>'
+    li.innerHTML += '<span>$'+stock.stockName+' ('+stock.stockSymbol+')'+'</span>'
+    li.textContent =  +' $'+ stock.currentPrice + ' ' + change;
     li.addEventListener('click', () => {
         currentStockId = stock.id;
         stockTitle.textContent = stock.stockName +' ('+stock.stockSymbol+') ';

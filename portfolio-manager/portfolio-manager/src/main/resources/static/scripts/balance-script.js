@@ -74,7 +74,8 @@ async function renderPage() {
     const pageTitle = document.querySelector('.portfolio-name');
     const pageDate = document.querySelector('.portfolio-date');
     pageTitle.textContent = currentPortfolio.name;
-    pageDate.textContent = currentPortfolio.currentDate.slice(0,10);
+    pageDate.textContent = new Date(currentPortfolio.currentDate).
+        toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'});
 
     const funds = document.querySelector('.funds-display');
     funds.textContent = '$ ' + currentPortfolio.balance;

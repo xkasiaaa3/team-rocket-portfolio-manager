@@ -28,7 +28,8 @@ async function renderPage() {
     const pageTitle = document.querySelector('.portfolio-name');
     const pageDate = document.querySelector('.portfolio-date');
     pageTitle.textContent = currentPortfolio.name;
-    pageDate.textContent = currentPortfolio.currentDate.slice(0,10);
+    pageDate.textContent = new Date(currentPortfolio.currentDate).
+        toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'});
 
     const performanceTitle = document.querySelector('.portfolio h1');
     const performanceChange = document.querySelector('#networth-change');
@@ -40,7 +41,6 @@ async function renderPage() {
         performanceChange.textContent = '+';
         performanceChange.style.color = 'green';
     } else if (portfolioChange < 0) {
-        performanceChange.textContent = '-';
         performanceChange.style.color = 'red';
     } else {
         performanceChange.style.color = 'black';
