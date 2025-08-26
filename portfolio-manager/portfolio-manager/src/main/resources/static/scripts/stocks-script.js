@@ -5,7 +5,7 @@ document.querySelector('.hamburger').addEventListener('click', () => {
 });
 
 document.getElementById('nextBtn').addEventListener('click', () => {
-  if (currentPage * itemsPerPage < stocks.length) {
+  if (currentPage * itemsPerPage < filteredStocks.length) {
     currentPage++;
     renderListPage(currentPage);
   }
@@ -62,14 +62,16 @@ document.getElementById('sellButton').addEventListener('click', async () => {
     renderPage();
 });
 
-
 let portfolioId = 1;
 
 let stocks = [];
+let filteredStocks = [];
 async function loadStocks() {
     const res = await fetch(base + `/stocks`);
     const data = await res.json();
     stocks = data;
+    filteredStocks = stocks;
+    renderPage();
 }
 
 const itemsPerPage = 10;
@@ -77,14 +79,20 @@ let currentPage = 1;
 let currentPageStock = [];
 let currentStockId;
 
-let container = document.getElementById('stockList');
+const searchBar = document.getElementById("searchBar");
+const sortOrder = document.getElementById("sortOrder");
+
+let container = document.querySelector('#stockList tbody');
 let modal = document.getElementById('stockModal');
 let closeBtn = document.querySelector('.close-button');
 let stockTitle = document.getElementById('stockTitle');
 let stockChart = document.getElementById('stockChart');
 let stockPerformChart;
 
-renderPage();
+loadStocks();
+
+searchBar.addEventListener("input", async () => sortStocks());
+sortOrder.addEventListener("change", async () => sortStocks());
 
 async function renderPage() {
     const portfolios = await fetchPortfolios();
@@ -96,7 +104,24 @@ async function renderPage() {
     pageDate.textContent = new Date(currentPortfolio.currentDate).
         toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'});
 
-    await loadStocks();
+    renderListPage(currentPage);
+}
+
+function sortStocks() {
+    const searchTerm = searchBar.value.toLowerCase();
+    const sort = sortOrder.value;
+
+    filteredStocks = stocks.filter(stock => {
+        return stock.stockName.toLowerCase().includes(searchTerm);
+    });
+
+    if (sort === "name") {
+        filteredStocks.sort((a, b) => a.stockName.localeCompare(b.stockName));
+    } else if (sort === "gain") {
+        filteredStocks.sort((a, b) => b.change - a.change);
+    } else if (sort === "loss") {
+        filteredStocks.sort((a, b) => a.change - b.change);
+    }
 
     renderListPage(currentPage);
 }
@@ -104,9 +129,9 @@ async function renderPage() {
 function renderListPage(page) {
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    const pageStocks = stocks.slice(start, end);
+    const pageStocks = filteredStocks.slice(start, end);
 
-    container.innerHTML = ''; // clear previous items
+    container.innerHTML = '';
     pageStocks.forEach(stock => renderStockPage(stock));
 
     closeBtn.addEventListener('click', () => {
@@ -117,18 +142,27 @@ function renderListPage(page) {
 }
 
 async function renderStockPage(stock) {
-    const li = document.createElement('li');
-    li.className = 'stock-item';
-    const change = (stock.change*100).toFixed(2);
-    li.innerHTML += '<span>'+stock.stockName+' ('+stock.stockSymbol+')'+'</span>'
-    li.innerHTML += '<span>$'+stock.stockName+' ('+stock.stockSymbol+')'+'</span>'
-    li.textContent =  +' $'+ stock.currentPrice + ' ' + change;
-    li.addEventListener('click', () => {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    tr.className = 'stock-item';
+    if (stock.change > 0) {
+        td.style.color = 'green';
+        td.textContent = '+'+(stock.change*100).toFixed(2)+'%';
+    } else if (stock.change < 0) {
+        td.style.color = 'red';
+        td.textContent = (stock.change*100).toFixed(2)+'%';
+    } else {
+        td.textContent = '+0.00%'
+    }
+    tr.innerHTML += '<td>'+stock.stockName+' ('+stock.stockSymbol+')'+'</td>';
+    tr.innerHTML += '<td>$'+stock.currentPrice+'</td>';
+    tr.appendChild(td);
+    tr.addEventListener('click', () => {
         currentStockId = stock.id;
         stockTitle.textContent = stock.stockName +' ('+stock.stockSymbol+') ';
         showModal(stock);
     });
-    container.appendChild(li);
+    container.appendChild(tr);
 }
 
 async function fetchPortfolios() {

@@ -44,11 +44,8 @@
         <div class="stock-controls">
             <input type="text" id="searchBar" placeholder="Search stocks..." />
             <div class="filters">
-                <select id="filterOwned">
-                    <option value="all">All Stocks</option>
-                    <option value="owned">Owned Only</option>
-                </select>
                 <select id="sortOrder">
+                    <option value="default">Sort by Size</option>
                     <option value="name">Sort by Name</option>
                     <option value="gain">Sort by Gain</option>
                     <option value="loss">Sort by Loss</option>
@@ -56,8 +53,21 @@
             </div>
         </div>
 
-        <ul id="stockList" class="stock-list">
-        </ul>
+        <table id="stockList" class="stock-list">
+            <colgroup>
+                <col style="width: 60%;">
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Name and Symbol</th>
+                    <th>Price</th>
+                    <th>Change %</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
         <div id="page-options">
             <button id="prevBtn">Previous</button>

@@ -71,6 +71,18 @@
   background-color: var(--hover-bg);
 }
 
+/* Table specific */
+
+table {
+  border-collapse: separate;
+  border-spacing: 0 18px;
+}
+
+th, td {
+  text-align: left;
+  padding-left: 8px;
+}
+
 #page-options {
   display: flex;
   justify-content: space-between;
