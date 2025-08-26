@@ -50,6 +50,44 @@ async function renderPage() {
     performanceChange.textContent += portfolioChange.toFixed(2) + "%";
     const histories = await fetchPortfolioHistories();
     renderChart(histories);
+
+    const amountInvested = await fetchPortfolioAmountInvested();
+    const profit = await fetchPortfolioProfit();
+    document.querySelector("#span-investment").textContent = "$" + amountInvested;
+    document.querySelector("#span-networth").textContent = "$" + profit;
+
+    renderRight(portfolioNetworth, currentPortfolio.balance, amountInvested, profit);
+}
+
+async function renderRight(portfolioNetworth, balance, amountInvested, profit) {
+    const networthText = document.querySelector(".market #right-networth");
+    const balanceText = document.querySelector(".market #right-balance");
+    const investmentText = document.querySelector(".market #right-investment");
+    const profitText = document.querySelector(".market #right-profit");
+
+    networthText.textContent = "$" + portfolioNetworth;
+    balanceText.textContent = "$" + balance;
+    investmentText.textContent = "$" + amountInvested;
+    profitText.textContent = "$" + profit;
+
+    const transactions = await fetchPortfolioTransactions();
+    renderTransactions(transactions.reverse().slice(0,5));
+}
+
+function renderTransactions(transactions) {
+    const transactionsList = document.querySelector('#transactions-list');
+    for (const t of transactions) {
+        const li = document.createElement("li");
+        if (t.action === "BUYING") {
+            li.style.color = "green";
+            li.textContent = "+";
+        } else {
+            li.style.color = "red";
+            li.textContent = "-";
+        }
+        li.textContent = li.textContent + t.amount + " " + t.stock.stockSymbol;
+        transactionsList.appendChild(li);
+    }
 }
 
 async function fetchPortfolios() {
@@ -64,6 +102,18 @@ async function fetchPortfolioNetworth() {
     return networth;
 }
 
+async function fetchPortfolioAmountInvested() {
+    const res = await fetch(`${base}/portfolios/${portfolioId}/money-invested`)
+    const amountInvested = await res.json();
+    return amountInvested;
+}
+
+async function fetchPortfolioProfit() {
+    const res = await fetch(`${base}/portfolios/${portfolioId}/profit`)
+    const profit = await res.json();
+    return profit;
+}
+
 async function fetchPortfolioChange() {
     const res = await fetch(`${base}/portfolios/${portfolioId}/change`)
     const change = await res.json();
@@ -76,66 +126,70 @@ async function fetchPortfolioHistories() {
     return histories;
 }
 
+async function fetchPortfolioTransactions() {
+    const res = await fetch(base +`/portfolios/${portfolioId}/transactions`);
+    const transactions = await res.json();
+    return transactions;
+}
+
 function renderChart(histories) {
-const ctx = document.getElementById('portfolio-chart').getContext('2d');
-const nwData = histories.map(pair => ({x: pair.date, y: pair.networth}));
-if (networthChart) networthChart.destroy();
-networthChart = new Chart(ctx, {
-  type: 'line',
+    const ctx = document.getElementById('portfolio-chart').getContext('2d');
+    const nwData = histories.map(pair => ({x: pair.date, y: pair.networth}));
+    if (networthChart) networthChart.destroy();
+    networthChart = new Chart(ctx, {
+      type: 'line',
 
-  // 1. Data: time-series points for net worth
-  data: {
-    datasets: [{
-      label: 'Portfolio Net Worth',
-      data: nwData,
-      fill: 'origin',                  // area under the line
-      borderColor: 'rgba(75,192,192,1)',
-      backgroundColor: 'rgba(75,192,192,0.2)',
-      pointRadius: 3,
-      tension: 0.2                    // smooth curves
-    }]
-  },
+      data: {
+        datasets: [{
+          label: 'Portfolio Net Worth',
+          data: nwData,
+          fill: 'origin',
+          borderColor: 'rgba(75,192,192,1)',
+          backgroundColor: 'rgba(75,192,192,0.2)',
+          pointRadius: 3,
+          tension: 0.2
+        }]
+      },
 
-  // 2. Options: time axis, currency formatting, responsive layout
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
 
-    scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: 'day',
-          tooltipFormat: 'MMM yyyy'
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'day',
+              tooltipFormat: 'MMM yyyy'
+            },
+            title: { display: false, text: 'Date' }
+          },
+          y: {
+            beginAtZero: false,
+            title: { display: false, text: 'Net Worth (USD)' },
+            ticks: {
+              callback: value => '$' + value.toLocaleString()
+            }
+          }
         },
-        title: { display: false, text: 'Date' }
-      },
-      y: {
-        beginAtZero: false,
-        title: { display: false, text: 'Net Worth (USD)' },
-        ticks: {
-          callback: value => '$' + value.toLocaleString()
-        }
-      }
-    },
 
-    plugins: {
-      title: {
-        display: true,
-        text: 'Portfolio Net Worth Over Last Month'
-      },
-      legend: {
-        display: false
-      },
-      tooltip: {
-        callbacks: {
-          label: ctx => {
-            const val = ctx.parsed.y;
-            return ` $${val.toLocaleString()}`;
+        plugins: {
+          title: {
+            display: true,
+            text: 'Portfolio Net Worth Over Last Month'
+          },
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const val = ctx.parsed.y;
+                return ` $${val.toLocaleString()}`;
+              }
+            }
           }
         }
       }
-    }
-  }
-});
+    });
 }

@@ -1,9 +1,12 @@
 .insights {
     margin-top: 40px;
+    display: flex;
+    justify-content: space-around;
 }
 
 .insights p {
   margin: 0.5rem 0;
+  font-size: 20px;
 }
 
 .insights p:nth-child(1) {

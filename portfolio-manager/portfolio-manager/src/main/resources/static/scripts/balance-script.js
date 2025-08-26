@@ -80,8 +80,26 @@ async function renderPage() {
     const funds = document.querySelector('.funds-display');
     funds.textContent = '$ ' + currentPortfolio.balance;
 
-    const transactions = await fetchPortfolioTransactions(portfolioId);
-    renderTransactions(transactions.reverse());
+    const amountInvested = await fetchPortfolioAmountInvested();
+    const profit = await fetchPortfolioProfit();
+    const portfolioNetworth = await fetchPortfolioNetworth();
+
+    renderRight(portfolioNetworth, currentPortfolio.balance, amountInvested, profit);
+}
+
+async function renderRight(portfolioNetworth, balance, amountInvested, profit) {
+    const networthText = document.querySelector(".market #right-networth");
+    const balanceText = document.querySelector(".market #right-balance");
+    const investmentText = document.querySelector(".market #right-investment");
+    const profitText = document.querySelector(".market #right-profit");
+
+    networthText.textContent = "$" + portfolioNetworth;
+    balanceText.textContent = "$" + balance;
+    investmentText.textContent = "$" + amountInvested;
+    profitText.textContent = "$" + profit;
+
+    const transactions = await fetchPortfolioTransactions();
+    renderTransactions(transactions.reverse().slice(0,5));
 }
 
 function renderTransactions(transactions) {
@@ -95,7 +113,7 @@ function renderTransactions(transactions) {
             li.style.color = "red";
             li.textContent = "-";
         }
-        li.textContent = li.textContent + t.amount + " " + t.stock.stockName;
+        li.textContent = li.textContent + t.amount + " " + t.stock.stockSymbol;
         transactionsList.appendChild(li);
     }
 }
@@ -106,8 +124,26 @@ async function fetchPortfolios() {
     return portfolios;
 }
 
+async function fetchPortfolioAmountInvested() {
+    const res = await fetch(`${base}/portfolios/${portfolioId}/money-invested`)
+    const amountInvested = await res.json();
+    return amountInvested;
+}
+
+async function fetchPortfolioProfit() {
+    const res = await fetch(`${base}/portfolios/${portfolioId}/profit`)
+    const profit = await res.json();
+    return profit;
+}
+
 async function fetchPortfolioTransactions() {
     const res = await fetch(base +`/portfolios/${portfolioId}/transactions`);
     const transactions = await res.json();
     return transactions;
+}
+
+async function fetchPortfolioNetworth() {
+    const res = await fetch(`${base}/portfolios/${portfolioId}/networth`)
+    const networth = await res.json();
+    return networth;
 }
