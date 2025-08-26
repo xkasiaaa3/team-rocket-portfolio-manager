@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import teamrocket.portfolio_manager.entity.Portfolio;
-import teamrocket.portfolio_manager.entity.PortfolioHistory;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
+import teamrocket.portfolio_manager.model.PortfolioNetworthDTO;
 import teamrocket.portfolio_manager.model.TransactionDTO;
 import teamrocket.portfolio_manager.service.PortfolioService;
 import teamrocket.portfolio_manager.service.StockService;
@@ -39,8 +39,8 @@ public class PortfolioController {
     }
     @GetMapping("/{portfolioId}/histories")
     @ResponseStatus(HttpStatus.OK)
-    public List<PortfolioHistory> getPortfolioHistories(@PathVariable Integer portfolioId) {
-        return portfolioService.getPortfolioHistories(portfolioId);
+    public List<PortfolioNetworthDTO> getPortfolioHistories(@PathVariable Integer portfolioId) {
+        return portfolioService.getPortfolioHistoriesForLastMonth(portfolioId);
     }
     @GetMapping("/{portfolioId}/balance")
     @ResponseStatus(HttpStatus.OK)

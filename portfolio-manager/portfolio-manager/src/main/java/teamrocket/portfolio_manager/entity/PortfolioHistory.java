@@ -4,8 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Positive;
+import teamrocket.portfolio_manager.model.PortfolioNetworthDTO;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -39,5 +41,9 @@ public class PortfolioHistory {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public PortfolioNetworthDTO toPortfolioNetworthDTO() {
+        return new PortfolioNetworthDTO(date, networth);
     }
 }

@@ -13,4 +13,5 @@ import java.util.List;
 public interface PortfolioHistoryRepository extends JpaRepository<PortfolioHistory, Integer> {
     List<PortfolioHistory> findByPortfolioId(Integer portfolioId);
     PortfolioHistory findByPortfolioIdAndDate(Integer portfolioId, Date date);
+    List<PortfolioHistory> findAllByPortfolioIdAndDateBetween(Integer portfolioId, Date startDate, Date endDate);
 }

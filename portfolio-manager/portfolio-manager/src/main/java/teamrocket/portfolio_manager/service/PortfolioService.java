@@ -5,12 +5,13 @@ import org.springframework.stereotype.Service;
 import teamrocket.portfolio_manager.entity.*;
 import teamrocket.portfolio_manager.exception.*;
 import teamrocket.portfolio_manager.model.Action;
+import teamrocket.portfolio_manager.model.PortfolioNetworthDTO;
 import teamrocket.portfolio_manager.model.TransactionDTO;
 import teamrocket.portfolio_manager.repository.*;
 
-import javax.sound.sampled.Port;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PortfolioService {
@@ -59,8 +60,25 @@ public class PortfolioService {
         return stockTransactionRepository.findByPortfolioIdAndStockId(portfolioId, stockId);
     }
 
-    public List<PortfolioHistory> getPortfolioHistories(Integer portfolioId) {
-        return portfolioHistoryRepository.findByPortfolioId(portfolioId);
+    public List<PortfolioNetworthDTO> getPortfolioHistoriesForLastMonth(Integer portfolioId) {
+        Portfolio currentPortfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+
+        Date currentDate = currentPortfolio.getCurrentDate();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        Date monthAgoDate = calendar.getTime();
+
+        List<PortfolioNetworthDTO> portfolioNetworths = new ArrayList<>(
+                portfolioHistoryRepository.findAllByPortfolioIdAndDateBetween(portfolioId, monthAgoDate, currentDate)
+                        .stream()
+                        .map(PortfolioHistory::toPortfolioNetworthDTO)
+                        .collect(Collectors.toList())
+        );
+
+        portfolioNetworths.add(new PortfolioNetworthDTO(currentDate, getPortfolioNetworth(portfolioId)));
+        portfolioNetworths.sort(Comparator.comparing(PortfolioNetworthDTO::getDate));
+        return portfolioNetworths;
     }
 
     StockTransaction buyStock(Integer stockId, Integer portfolioId, BigDecimal amount) {
@@ -155,7 +173,7 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         updatePortfolioHistory(portfolioId);
         portfolio.forwardNextWeekDay();
-        while (!isMarketOpen(portfolio.getCurrentDate())){
+        while (!isMarketOpen(portfolio.getCurrentDate())) {
             portfolio.forwardNextWeekDay();
         }
         portfolioRepository.save(portfolio);
@@ -182,7 +200,7 @@ public class PortfolioService {
         }
     }
 
-    private boolean isMarketOpen(Date date){
+    private boolean isMarketOpen(Date date) {
         return stockHistoryRepository.existsByDate(date);
     }
 }
