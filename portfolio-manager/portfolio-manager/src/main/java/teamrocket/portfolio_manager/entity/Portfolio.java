@@ -43,9 +43,9 @@ public class Portfolio {
         calendar.setTime(currentPortfolioDate);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
-        if (calendar.get(Calendar.DAY_OF_WEEK) >4){
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
+//        if (calendar.get(Calendar.DAY_OF_WEEK) > 5){
+//            calendar.add(Calendar.DAY_OF_MONTH, 1);
+//        }
 
         currentPortfolioDate = calendar.getTime();
 

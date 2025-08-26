@@ -15,8 +15,8 @@ import java.util.Optional;
 @Repository
 public interface StockHistoryRepository extends JpaRepository<StockHistory, Integer> {
     List<StockHistory> findAllByStockIdAndDateBetween(Integer stockId, Date startDate, Date endDate);
-
     StockHistory findByStockIdAndDate(int id, Date date);
+    List<StockHistory> findAllByDate(Date date);
 
     Optional<StockHistory> findFirstByStockIdAndDateLessThanEqualOrderByDateDesc(Integer stockId, Date date);
 

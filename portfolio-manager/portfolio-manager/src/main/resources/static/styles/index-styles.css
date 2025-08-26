@@ -1,0 +1,29 @@
+.insights {
+    margin-top: 40px;
+}
+
+.insights p {
+  margin: 0.5rem 0;
+}
+
+.insights p:nth-child(1) {
+  color: var(--accent-color);
+}
+
+.insights p:nth-child(2) {
+  color: var(--gain-color);
+}
+
+.insights p:nth-child(3) {
+  color: var(--loss-color);
+}
+
+.networth {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#networth-change {
+    font-size: 12px;
+}

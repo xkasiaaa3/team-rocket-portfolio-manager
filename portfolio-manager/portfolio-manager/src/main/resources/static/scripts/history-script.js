@@ -19,7 +19,7 @@ document.getElementById('prevBtn').addEventListener('click', () => {
 
 document.querySelector('.forward-button').addEventListener('click', () => {
     forwardDay();
-    renderPage();
+    setTimeout(() => {renderPage();}, 5000);
 });
 
 async function forwardDay() {

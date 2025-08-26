@@ -153,27 +153,28 @@ public class PortfolioService {
         return (currentNetworth.doubleValue() - previousNetworth.doubleValue()) / previousNetworth.doubleValue();
     }
 
-    public void updatePortfolioHistory(Integer portfolioId) {
-        BigDecimal networth = getPortfolioNetworth(portfolioId);
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
-        portfolioHistoryRepository.save(new PortfolioHistory(networth, portfolio.getCurrentDate(), portfolioId));
-    }
-
     public Date forwardDayAndUpdateValues(Integer portfolioId) {
         // Add today's networth to the portfolio history, then move forward one day and update stock prices
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
-        updatePortfolioHistory(portfolioId);
+        BigDecimal networth = getPortfolioNetworth(portfolioId);
+        portfolioHistoryRepository.save(new PortfolioHistory(networth, portfolio.getCurrentDate(), portfolioId));
+        System.out.println(portfolio.getCurrentDate());
         portfolio.forwardNextWeekDay();
+        System.out.println(portfolio.getCurrentDate());
         while (!isMarketOpen(portfolio.getCurrentDate())) {
             portfolio.forwardNextWeekDay();
         }
+        System.out.println(portfolio.getCurrentDate());
+
         portfolioRepository.save(portfolio);
-        List<Stock> stocks = stockRepository.findAll();
-        for (Stock s : stocks) {
-            StockHistory stockHistory = stockHistoryRepository.findByStockIdAndDate(s.getId(), portfolio.getCurrentDate());
-            if (stockHistory != null) s.setCurrentPrice(stockHistory.getPrice());
+        System.out.println("Start");
+        List<StockHistory> stockHistories = stockHistoryRepository.findAllByDate(portfolio.getCurrentDate());
+        for (StockHistory sh : stockHistories) {
+            Stock stock = stockRepository.findById(sh.getStock().getId()).orElseThrow(() -> new StockNotFoundException(sh.getStock().getId()));
+            stock.setCurrentPrice(sh.getPrice());
+            stockRepository.save(stock);
         }
-        stockRepository.saveAll(stocks);
+        System.out.println("End");
         return portfolio.getCurrentDate();
     }
 

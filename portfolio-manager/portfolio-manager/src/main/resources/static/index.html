@@ -14,7 +14,11 @@
     <div class="icon hamburger"><i class="fas fa-bars"></i></div>
     <div class="portfolio-name">My Portfolio</div>
     <div class="portfolio-date">2015-01-01</div>
-    <div class="forward-button"><button id="forward-day-button">Next Day</button></div>
+    <div class="forward-button">
+        <button id="forward-day-button">
+            <i class="fas fa-"></i>Next Day
+        </button>
+    </div>
 </header>
 
 <!-- Main Body -->
@@ -38,11 +42,14 @@
 
     <!-- Column 2: Middle Content -->
     <section class="portfolio">
-        <h1>Networth:</h1>
-        <canvas id="portfolio-chart""></canvas>
+        <div class="networth">
+            <h1>Networth:</h1>
+            <span id="networth-change">%CHANGE</span>
+        </div>
+        <canvas id="portfolio-chart"></canvas>
         <div class="insights">
-            <p><strong>Recent Activity:</strong> Portfolio created</p>
-            <p><strong>Next Steps:</strong> Add funds or view stock options</p>
+            <p><strong>Amount invested:</strong> VALUE</p>
+            <p><strong>Current networth:</strong> VALUE</p>
         </div>
     </section>
 

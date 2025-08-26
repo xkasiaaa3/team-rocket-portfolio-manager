@@ -20,7 +20,7 @@ document.getElementById('prevBtn').addEventListener('click', () => {
 
 document.querySelector('.forward-button').addEventListener('click', () => {
     forwardDay();
-    renderPage();
+    setTimeout(() => {renderPage();}, 5000);
 });
 
 async function forwardDay() {
@@ -118,11 +118,12 @@ function renderListPage(page) {
 async function renderStockPage(stock) {
     const li = document.createElement('li');
     li.className = 'stock-item';
-    li.textContent = stock.stockSymbol +' '+ stock.stockName +' $'+ stock.currentPrice;
+    const change = (stock.change*100).toFixed(2);
+    li.textContent = stock.stockSymbol +' '+ stock.stockName +' $'+ stock.currentPrice + ' ' + change;
     li.addEventListener('click', () => {
         currentStockId = stock.id;
         stockTitle.textContent = stock.stockName +' ('+stock.stockSymbol+') ';
-        showModal(stock.stockSymbol);
+        showModal(stock);
     });
     container.appendChild(li);
 }
@@ -133,33 +134,65 @@ async function fetchPortfolios() {
     return portfolios;
 }
 
-function showModal(symbol) {
-  modal.classList.remove('hidden');
-  renderChart(symbol, stockChart); // Load chart data dynamically
+async function fetchStockHistory(stock) {
+    const res = await fetch(base + `/stocks/${stock.id}/history`);
+    const histories = await res.json();
+    return histories
 }
 
-function renderChart(symbol) {
-  // Example using Chart.js
+async function showModal(stock) {
+  modal.classList.remove('hidden');
+  const histories = await fetchStockHistory(stock)
+  renderChart(histories);
+}
+
+function renderChart(histories) {
+    const nwData = histories.map(pair => ({x: pair.date.slice(5,10), y: pair.price}));
   const ctx = stockChart.getContext('2d');
   if (stockPerformChart) {
     stockPerformChart.destroy();
   }
   stockPerformChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-      datasets: [{
-        label: `${symbol} Performance`,
-        data: [120, 125, 130, 128, 135],
-        borderColor: '#3498db',
-        fill: false
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
+      type: 'line',
+
+      // 1. Data: time-series points for net worth
+        data: {
+            datasets: [{
+              data: nwData,
+              fill: 'origin',                  // area under the line
+              borderColor: 'rgba(75,192,192,1)',
+              backgroundColor: 'rgba(75,192,192,0.2)',
+              pointRadius: 3,
+              tension: 0.2                    // smooth curves
+            }]
+        },
+
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'day',
+              tooltipFormat: 'MMM yyyy'
+            },
+            title: { display: false, text: 'Date' }
+          },
+          y: {
+            beginAtZero: false,
+            title: { display: false, text: 'Net Worth (USD)' },
+            ticks: {
+              callback: value => '$' + value.toLocaleString()
+            }
+          }
+        },
+
+        options: {
+        responsive: true,
+          legend: {
+            display: false
+          },
+        scales: {
         y: { beginAtZero: false }
-      }
-    }
+        }
+        }
   });
 }

@@ -6,11 +6,11 @@ document.querySelector('.hamburger').addEventListener('click', () => {
 
 document.querySelector('.forward-button').addEventListener('click', () => {
     forwardDay();
-    renderPage();
+    setTimeout(() => {renderPage();}, 5000);
 });
 
 async function forwardDay() {
-    fetch(base + `/portfolios/${portfolioId}/forward-date`, {
+    await fetch(base + `/portfolios/${portfolioId}/forward-date`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
     })
@@ -31,8 +31,23 @@ async function renderPage() {
     pageDate.textContent = currentPortfolio.currentDate.slice(0,10);
 
     const performanceTitle = document.querySelector('.portfolio h1');
-    const portfolioNetworth = await fetchPortfolioNetworth(portfolioId);
+    const performanceChange = document.querySelector('#networth-change');
+    const portfolioNetworth = await fetchPortfolioNetworth();
+    var portfolioChange = await fetchPortfolioChange();
+    portfolioChange *= 100;
+    performanceChange.textContent = '';
+    if (portfolioChange > 0) {
+        performanceChange.textContent = '+';
+        performanceChange.style.color = 'green';
+    } else if (portfolioChange < 0) {
+        performanceChange.textContent = '-';
+        performanceChange.style.color = 'red';
+    } else {
+        performanceChange.style.color = 'black';
+    }
+
     performanceTitle.textContent = 'Networth: $' + portfolioNetworth;
+    performanceChange.textContent += portfolioChange.toFixed(2) + "%";
     const histories = await fetchPortfolioHistories();
     renderChart(histories);
 }
@@ -47,6 +62,12 @@ async function fetchPortfolioNetworth() {
     const res = await fetch(`${base}/portfolios/${portfolioId}/networth`)
     const networth = await res.json();
     return networth;
+}
+
+async function fetchPortfolioChange() {
+    const res = await fetch(`${base}/portfolios/${portfolioId}/change`)
+    const change = await res.json();
+    return change;
 }
 
 async function fetchPortfolioHistories() {

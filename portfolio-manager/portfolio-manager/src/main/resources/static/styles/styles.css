@@ -40,10 +40,21 @@ body {
   font-weight: 600;
 }
 
+#forward-day-button {
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--button-bg);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 0px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
 /* Body Layout */
 .app-body {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 1fr 3fr 1fr;
   gap: 1rem;
   padding: 2rem;
 }
@@ -115,21 +126,6 @@ body {
   font-style: italic;
 }
 
-.insights p {
-  margin: 0.5rem 0;
-}
-
-.insights p:nth-child(1) {
-  color: var(--accent-color);
-}
-
-.insights p:nth-child(2) {
-  color: var(--gain-color);
-}
-
-.insights p:nth-child(3) {
-  color: var(--loss-color);
-}
 
 /* Market Section */
 .market {
