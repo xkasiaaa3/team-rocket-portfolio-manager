@@ -4,10 +4,6 @@ document.querySelector('.hamburger').addEventListener('click', () => {
   alert('Open portfolio selector or add new portfolio');
 });
 
-document.querySelector('.user').addEventListener('click', () => {
-  alert('Open user settings or profile');
-});
-
 const addModal = document.getElementById('addFundsModal');
 const withdrawModal = document.getElementById('withdrawFundsModal');
 const addBtn = document.querySelector('.action-button.plus');
@@ -33,8 +29,8 @@ window.onclick = e => {
   }
 };
 
-addSubmitBtn.onclick = async (portfolioId = 1) => {
-    fetch(base + `/portfolios/1/balance`, {
+addSubmitBtn.onclick = async () => {
+    fetch(base + `/portfolios/${portfolioId}/balance`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         body: addInput.value
@@ -44,8 +40,8 @@ addSubmitBtn.onclick = async (portfolioId = 1) => {
     renderPage();
 }
 
-withdrawSubmitBtn.onclick = async (portfolioId = 1) => {
-    fetch(base + `/portfolios/1/balance`, {
+withdrawSubmitBtn.onclick = async () => {
+    fetch(base + `/portfolios/${portfolioId}/balance`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         body: -withdrawInput.value
@@ -55,20 +51,36 @@ withdrawSubmitBtn.onclick = async (portfolioId = 1) => {
     renderPage();
 }
 
+document.querySelector('.forward-button').addEventListener('click', () => {
+    forwardDay();
+    renderPage();
+});
+
+async function forwardDay() {
+    fetch(base + `/portfolios/${portfolioId}/forward-date`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+    })
+}
+
+let portfolioId = 1;
+
 renderPage();
 
-async function renderPage(portfolioId = 1) {
+async function renderPage() {
     const portfolios = await fetchPortfolios();
     const currentPortfolio = portfolios[portfolioId-1];
 
     const pageTitle = document.querySelector('.portfolio-name');
+    const pageDate = document.querySelector('.portfolio-date');
     pageTitle.textContent = currentPortfolio.name;
+    pageDate.textContent = currentPortfolio.currentDate.slice(0,10);
 
     const funds = document.querySelector('.funds-display');
     funds.textContent = '$ ' + currentPortfolio.balance;
 
     const transactions = await fetchPortfolioTransactions(portfolioId);
-    renderTransactions(transactions);
+    renderTransactions(transactions.reverse());
 }
 
 function renderTransactions(transactions) {
@@ -93,7 +105,7 @@ async function fetchPortfolios() {
     return portfolios;
 }
 
-async function fetchPortfolioTransactions(portfolioId = 1) {
+async function fetchPortfolioTransactions() {
     const res = await fetch(base +`/portfolios/${portfolioId}/transactions`);
     const transactions = await res.json();
     return transactions;

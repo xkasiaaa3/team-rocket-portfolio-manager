@@ -1,19 +1,34 @@
+const base = "http://localhost:8080"
+
 document.querySelector('.hamburger').addEventListener('click', () => {
   alert('Open portfolio selector or add new portfolio');
 });
 
-document.querySelector('.user').addEventListener('click', () => {
-  alert('Open user settings or profile');
+document.querySelector('.forward-button').addEventListener('click', () => {
+    forwardDay();
+    renderPage();
 });
+
+async function forwardDay() {
+    fetch(base + `/portfolios/${portfolioId}/forward-date`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+    })
+}
+
+let portfolioId = 1;
+let networthChart;
 
 renderPage();
 
-async function renderPage(portfolioId = 1) {
+async function renderPage() {
     const portfolios = await fetchPortfolios();
     const currentPortfolio = portfolios[portfolioId-1];
 
     const pageTitle = document.querySelector('.portfolio-name');
+    const pageDate = document.querySelector('.portfolio-date');
     pageTitle.textContent = currentPortfolio.name;
+    pageDate.textContent = currentPortfolio.currentDate.slice(0,10);
 
     const performanceTitle = document.querySelector('.portfolio h1');
     const portfolioNetworth = await fetchPortfolioNetworth(portfolioId);
@@ -22,13 +37,12 @@ async function renderPage(portfolioId = 1) {
 }
 
 async function fetchPortfolios() {
-    const res = await fetch("http://localhost:8080/portfolios");
+    const res = await fetch(base + "/portfolios");
     const portfolios = await res.json();
     return portfolios;
 }
 
-async function fetchPortfolioNetworth(portfolioId) {
-    const base = "http://localhost:8080"
+async function fetchPortfolioNetworth() {
     const res = await fetch(`${base}/portfolios/${portfolioId}/networth`)
     const networth = await res.json();
     return networth;
@@ -36,7 +50,10 @@ async function fetchPortfolioNetworth(portfolioId) {
 
 function renderChart() {
 const ctx = document.getElementById('portfolio-chart').getContext('2d');
-const networthChart = new Chart(ctx, {
+if (networthChart) {
+    networthChart.destroy();
+}
+networthChart = new Chart(ctx, {
   type: 'line',
 
   // 1. Data: time-series points for net worth
@@ -66,14 +83,14 @@ const networthChart = new Chart(ctx, {
       x: {
         type: 'time',
         time: {
-          unit: 'month',
+          unit: 'day',
           tooltipFormat: 'MMM yyyy'
         },
-        title: { display: true, text: 'Date' }
+        title: { display: false, text: 'Date' }
       },
       y: {
         beginAtZero: false,
-        title: { display: true, text: 'Net Worth (USD)' },
+        title: { display: false, text: 'Net Worth (USD)' },
         ticks: {
           callback: value => '$' + value.toLocaleString()
         }

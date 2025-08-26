@@ -165,7 +165,7 @@ public class PortfolioService {
     public void updatePortfolioHistory(Integer portfolioId) {
         BigDecimal networth = getPortfolioNetworth(portfolioId);
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
-        portfolioHistoryRepository.save(new PortfolioHistory(networth, portfolio.getCurrentDate()));
+        portfolioHistoryRepository.save(new PortfolioHistory(networth, portfolio.getCurrentDate(), portfolioId));
     }
 
     public Date forwardDayAndUpdateValues(Integer portfolioId) {

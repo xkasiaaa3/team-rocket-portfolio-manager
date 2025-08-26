@@ -31,4 +31,13 @@ public class TransactionDTO {
     public void setAction(Action action) {
         this.action = action;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionDTO{" +
+                "stockId=" + stockId +
+                ", amount=" + amount +
+                ", action=" + action +
+                '}';
+    }
 }

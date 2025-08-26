@@ -59,6 +59,10 @@
   vertical-align: middle;
 }
 
+.transaction-item {
+    display: flex;
+}
+
 /* Basic modal overlay */
 .modal {
   display: none; /* hidden by default */

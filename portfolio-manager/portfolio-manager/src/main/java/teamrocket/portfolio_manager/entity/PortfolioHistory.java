@@ -22,9 +22,10 @@ public class PortfolioHistory {
 
     public PortfolioHistory() {
     }
-    public PortfolioHistory(BigDecimal networth, Date date) {
+    public PortfolioHistory(BigDecimal networth, Date date, Integer portfolioId) {
         this.networth = networth;
         this.date = date;
+        this.portfolioId = portfolioId;
     }
 
     public BigDecimal getNetworth() {
