@@ -183,6 +183,6 @@ public class PortfolioService {
     }
 
     private boolean isMarketOpen(Date date){
-        return !stockHistoryRepository.findAllByDate(date).isEmpty();
+        return stockHistoryRepository.existsByDate(date);
     }
 }

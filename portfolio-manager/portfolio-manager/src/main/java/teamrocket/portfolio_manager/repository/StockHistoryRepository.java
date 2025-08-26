@@ -13,5 +13,5 @@ public interface StockHistoryRepository extends JpaRepository<StockHistory, Inte
     List<StockHistory> findAllByStockId(Integer stock_id);
     StockHistory findByStockIdAndDate(int id, Date date);
 
-    List<StockHistory> findAllByDate(Date date);
+    boolean existsByDate(Date date);
 }
