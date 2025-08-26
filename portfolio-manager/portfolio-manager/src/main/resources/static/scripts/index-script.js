@@ -33,7 +33,8 @@ async function renderPage() {
     const performanceTitle = document.querySelector('.portfolio h1');
     const portfolioNetworth = await fetchPortfolioNetworth(portfolioId);
     performanceTitle.textContent = 'Networth: $' + portfolioNetworth;
-    renderChart();
+    const histories = await fetchPortfolioHistories();
+    renderChart(histories);
 }
 
 async function fetchPortfolios() {
@@ -48,11 +49,16 @@ async function fetchPortfolioNetworth() {
     return networth;
 }
 
-function renderChart() {
-const ctx = document.getElementById('portfolio-chart').getContext('2d');
-if (networthChart) {
-    networthChart.destroy();
+async function fetchPortfolioHistories() {
+    const res = await fetch(`${base}/portfolios/${portfolioId}/histories`)
+    const histories = await res.json();
+    return histories;
 }
+
+function renderChart(histories) {
+const ctx = document.getElementById('portfolio-chart').getContext('2d');
+const nwData = histories.map(pair => ({x: pair.date, y: pair.networth}));
+if (networthChart) networthChart.destroy();
 networthChart = new Chart(ctx, {
   type: 'line',
 
@@ -60,12 +66,7 @@ networthChart = new Chart(ctx, {
   data: {
     datasets: [{
       label: 'Portfolio Net Worth',
-      data: [
-        { x: '2025-01-01', y: 100000 },
-        { x: '2025-02-01', y: 105250 },
-        { x: '2025-03-01', y: 98000 },
-        // …more monthly snapshots
-      ],
+      data: nwData,
       fill: 'origin',                  // area under the line
       borderColor: 'rgba(75,192,192,1)',
       backgroundColor: 'rgba(75,192,192,0.2)',
@@ -100,7 +101,7 @@ networthChart = new Chart(ctx, {
     plugins: {
       title: {
         display: true,
-        text: 'Portfolio Net Worth Over Time'
+        text: 'Portfolio Net Worth Over Last Month'
       },
       legend: {
         display: false

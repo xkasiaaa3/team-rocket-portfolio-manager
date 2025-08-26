@@ -22,4 +22,12 @@ public class PortfolioNetworthDTO {
     public BigDecimal getNetworth() {
         return networth;
     }
+
+    @Override
+    public String toString() {
+        return "PortfolioNetworthDTO{" +
+                "date='" + date + '\'' +
+                ", networth=" + networth +
+                '}';
+    }
 }
