@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portfolio Manager - Stocks</title>
     <link rel="stylesheet" href="styles/styles.css" />
-    <link rel="stylesheet" href="styles/stocks-styles.css" />
+    <link rel="stylesheet" href="styles/owned-stocks-styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -59,8 +59,7 @@
                 <select id="sortOrder">
                     <option value="default">Sort by Size</option>
                     <option value="name">Sort by Name</option>
-                    <option value="gain">Sort by Gain</option>
-                    <option value="loss">Sort by Loss</option>
+                    <option value="amount">Sort by Amount</option>
                 </select>
             </div>
         </div>
@@ -72,11 +71,11 @@
                 <col style="width: 20%;">
             </colgroup>
             <thead>
-                <tr>
-                    <th>Name and Symbol</th>
-                    <th>Price</th>
-                    <th>Change %</th>
-                </tr>
+            <tr>
+                <th>Name and Symbol</th>
+                <th>Amount</th>
+                <th>Current Price</th>
+            </tr>
             </thead>
             <tbody></tbody>
         </table>
@@ -121,6 +120,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-<script src="scripts/stocks-script.js"></script>
+<script src="scripts/owned-stocks-script.js"></script>
 </body>
 </html>
