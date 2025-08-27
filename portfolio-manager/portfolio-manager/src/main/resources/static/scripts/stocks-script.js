@@ -18,13 +18,13 @@ document.getElementById('prevBtn').addEventListener('click', () => {
   }
 });
 
-document.querySelector('.forward-button').addEventListener('click', () => {
-    forwardDay();
-    setTimeout(() => {renderPage();}, 5000);
+document.querySelector('.forward-button').addEventListener('click', async () => {
+    await forwardDay();
+    loadStocks();
 });
 
 async function forwardDay() {
-    fetch(base + `/portfolios/${portfolioId}/forward-date`, {
+    await fetch(base + `/portfolios/${portfolioId}/forward-date`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
     })
@@ -125,14 +125,13 @@ async function renderPage() {
     pageDate.textContent = new Date(currentPortfolio.currentDate).
         toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'});
 
+    await renderListPage(currentPage);
 
     const amountInvested = await fetchPortfolioAmountInvested();
     const profit = await fetchPortfolioProfit();
     const portfolioNetworth = await fetchPortfolioNetworth();
 
-    renderRight(portfolioNetworth, currentPortfolio.balance, amountInvested, profit);
-
-    renderListPage(currentPage);
+    await renderRight(portfolioNetworth, currentPortfolio.balance, amountInvested, profit);
 }
 
 function sortStocks() {

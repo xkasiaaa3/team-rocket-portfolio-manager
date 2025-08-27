@@ -158,13 +158,10 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         BigDecimal networth = getPortfolioNetworth(portfolioId);
         portfolioHistoryRepository.save(new PortfolioHistory(networth, portfolio.getCurrentDate(), portfolioId));
-        System.out.println(portfolio.getCurrentDate());
         portfolio.forwardNextWeekDay();
-        System.out.println(portfolio.getCurrentDate());
         while (!isMarketOpen(portfolio.getCurrentDate())) {
             portfolio.forwardNextWeekDay();
         }
-        System.out.println(portfolio.getCurrentDate());
 
         portfolioRepository.save(portfolio);
         System.out.println("Start");

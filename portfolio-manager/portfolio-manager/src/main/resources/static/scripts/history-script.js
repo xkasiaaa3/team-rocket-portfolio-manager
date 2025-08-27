@@ -18,12 +18,12 @@ document.getElementById('prevBtn').addEventListener('click', () => {
 });
 
 document.querySelector('.forward-button').addEventListener('click', () => {
-    forwardDay();
-    setTimeout(() => {renderPage();}, 5000);
+    await forwardDay();
+    renderPage();
 });
 
 async function forwardDay() {
-    fetch(base + `/portfolios/${portfolioId}/forward-date`, {
+    await fetch(base + `/portfolios/${portfolioId}/forward-date`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
     })

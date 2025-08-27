@@ -4,9 +4,9 @@ document.querySelector('.hamburger').addEventListener('click', () => {
   alert('Open portfolio selector or add new portfolio');
 });
 
-document.querySelector('.forward-button').addEventListener('click', () => {
-    forwardDay();
-    setTimeout(() => {renderPage();}, 5000);
+document.querySelector('.forward-button').addEventListener('click', async () => {
+    await forwardDay();
+    renderPage();
 });
 
 async function forwardDay() {
