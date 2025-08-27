@@ -48,9 +48,8 @@ public class StockService {
         }
 
         return stocks.stream().map(s -> {
-            StockHistory stockHistory = latestHistories.get(s.getId());
             BigDecimal currentPrice = s.getCurrentPrice();
-            BigDecimal previousPrice = stockHistory.getPrice();
+            BigDecimal previousPrice = latestHistories.containsKey(s.getId()) ? latestHistories.get(s.getId()).getPrice() : currentPrice;
 
             double change = (currentPrice.doubleValue() - previousPrice.doubleValue()) / previousPrice.doubleValue();
             return s.toDTO(change);
@@ -107,7 +106,6 @@ public class StockService {
 
     @Transactional
     private void updateHistoryForStock(String stockSymbol, Integer stockId) {
-
         try {
             int updated = entityManager.createNativeQuery("INSERT INTO stock_history(stock_id, date, price) SELECT " + stockId + ", price, open FROM CSVREAD('portfolio-manager/data/stock_data/" + stockSymbol + ".csv', NULL, 'charset=UTF-8') OFFSET 2;").executeUpdate();
             System.out.println("Updated rows: [" + updated + "] for stock " + stockSymbol);
