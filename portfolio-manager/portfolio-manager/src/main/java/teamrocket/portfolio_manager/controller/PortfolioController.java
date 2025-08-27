@@ -8,6 +8,7 @@ import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
 import teamrocket.portfolio_manager.model.PortfolioNetworthDTO;
 import teamrocket.portfolio_manager.model.StockTransactionWithChangeDTO;
+import teamrocket.portfolio_manager.model.StockWithAmountDTO;
 import teamrocket.portfolio_manager.model.TransactionDTO;
 import teamrocket.portfolio_manager.service.PortfolioService;
 import teamrocket.portfolio_manager.service.StockService;
@@ -66,7 +67,7 @@ public class PortfolioController {
     }
     @GetMapping("/{portfolioId}/stocks")
     @ResponseStatus(HttpStatus.OK)
-    public List<Stock> getOwnedStocks(@PathVariable Integer portfolioId) {
+    public List<StockWithAmountDTO> getOwnedStocks(@PathVariable Integer portfolioId) {
         return portfolioService.getPortfolioStocks(portfolioId);
     }
     @GetMapping("/{portfolioId}/money-invested")

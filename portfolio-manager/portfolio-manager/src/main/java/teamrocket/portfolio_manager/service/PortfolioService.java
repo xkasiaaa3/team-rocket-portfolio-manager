@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import teamrocket.portfolio_manager.entity.*;
 import teamrocket.portfolio_manager.exception.*;
-import teamrocket.portfolio_manager.model.Action;
-import teamrocket.portfolio_manager.model.PortfolioNetworthDTO;
-import teamrocket.portfolio_manager.model.StockTransactionWithChangeDTO;
-import teamrocket.portfolio_manager.model.TransactionDTO;
+import teamrocket.portfolio_manager.model.*;
 import teamrocket.portfolio_manager.repository.*;
 
 import java.math.BigDecimal;
@@ -121,24 +118,45 @@ public class PortfolioService {
         }
     }
 
-    public List<Stock> getPortfolioStocks(Integer portfolioId) {
+    public List<StockWithAmountDTO> getPortfolioStocks(Integer portfolioId) {
         List<StockTransaction> transactions = stockTransactionRepository.findByPortfolioId(portfolioId);
-        HashSet<Integer> portfolioStockIds = new HashSet<>();
-        transactions.forEach(t -> portfolioStockIds.add(t.getStock().getId()));
-        List<Stock> stocks = new ArrayList<>();
-        portfolioStockIds.forEach(i -> {
-            if (checkStockAmount(i, portfolioId, BigDecimal.ZERO).compareTo(BigDecimal.ZERO) > 0) {
-                stocks.add(stockRepository.findById(i).orElseThrow(() -> new StockNotFoundException(i)));
+
+        Map<Integer, StockWithAmountDTO> result = new HashMap<>();
+
+        for (StockTransaction transaction : transactions) {
+            Integer stockId = transaction.getStock().getId();
+            if (result.containsKey(stockId) ){
+                if (transaction.getAction() == Action.BUYING) {
+                    result.get(stockId).addAmount(transaction.getAmount());
+                } else {
+                    result.get(stockId).subtractAmount(transaction.getAmount());
+                }
             }
-        });
-        return stocks;
+
+            else {
+                result.put(transaction.getStock().getId(), transaction.toAmountDTO());
+            }
+        }
+        return result.values().stream().toList();
+
+//        HashSet<Integer> portfolioStockIds = new HashSet<>();
+//        transactions.forEach(t -> portfolioStockIds.add(t.getStock().getId()));
+//        List<Stock> stocks = new ArrayList<>();
+//        portfolioStockIds.forEach(i -> {
+//            if (checkStockAmount(i, portfolioId, BigDecimal.ZERO).compareTo(BigDecimal.ZERO) > 0) {
+//                stocks.add(stockRepository.findById(i).orElseThrow(() -> new StockNotFoundException(i)));
+//            }
+//        });
+//
+//
+//        return stocks;
     }
 
     public BigDecimal getPortfolioNetworth(Integer portfolioId) {
         BigDecimal netWorth = BigDecimal.ZERO;
-        List<Stock> stocks = getPortfolioStocks(portfolioId);
-        for (Stock s : stocks) {
-            netWorth = netWorth.add(checkStockAmount(s.getId(), portfolioId, BigDecimal.ZERO).multiply(s.getCurrentPrice()));
+        List<StockWithAmountDTO> stocks = getPortfolioStocks(portfolioId);
+        for (StockWithAmountDTO s : stocks) {
+            netWorth = netWorth.add(s.getAmount().multiply(s.getCurrentPrice()));
         }
         return netWorth;
     }
@@ -147,7 +165,7 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
 
         BigDecimal currentNetworth = getPortfolioNetworth(portfolioId);
-        Optional<PortfolioHistory> previousPortfolioHistory = portfolioHistoryRepository.findFirstByPortfolioIdAndDateLessThanEqualOrderByDateDesc(portfolioId,portfolio.getCurrentDate());
+        Optional<PortfolioHistory> previousPortfolioHistory = portfolioHistoryRepository.findFirstByPortfolioIdAndDateLessThanEqualOrderByDateDesc(portfolioId, portfolio.getCurrentDate());
         BigDecimal previousNetworth = previousPortfolioHistory.isPresent() ? previousPortfolioHistory.get().getNetworth() : currentNetworth;
 
         return (currentNetworth.doubleValue() - previousNetworth.doubleValue()) / previousNetworth.doubleValue();
@@ -194,7 +212,7 @@ public class PortfolioService {
     }
 
     public BigDecimal getMoneyInvested(Integer portfolioId) {
-        List <StockTransaction> stocks = getPortfolioTransactions(portfolioId);
+        List<StockTransaction> stocks = getPortfolioTransactions(portfolioId);
         return stocks.stream()
                 .filter(st -> st.getAction() == Action.BUYING)
                 .map(st -> st.getAmount().multiply(st.getActionPrice()))
@@ -202,7 +220,7 @@ public class PortfolioService {
     }
 
     public BigDecimal getProfit(Integer portfolioId) {
-        List <StockTransaction> stocks = getPortfolioTransactions(portfolioId);
+        List<StockTransaction> stocks = getPortfolioTransactions(portfolioId);
         BigDecimal sells = stocks.stream()
                 .filter(st -> st.getAction() == Action.SELLING)
                 .map(st -> st.getAmount().multiply(st.getActionPrice()))
