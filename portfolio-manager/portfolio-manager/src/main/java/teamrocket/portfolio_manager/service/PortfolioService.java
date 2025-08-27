@@ -6,6 +6,7 @@ import teamrocket.portfolio_manager.entity.*;
 import teamrocket.portfolio_manager.exception.*;
 import teamrocket.portfolio_manager.model.Action;
 import teamrocket.portfolio_manager.model.PortfolioNetworthDTO;
+import teamrocket.portfolio_manager.model.StockTransactionWithChangeDTO;
 import teamrocket.portfolio_manager.model.TransactionDTO;
 import teamrocket.portfolio_manager.repository.*;
 
@@ -52,11 +53,10 @@ public class PortfolioService {
     }
 
     public List<StockTransaction> getPortfolioTransactions(Integer portfolioId) {
-//        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         return stockTransactionRepository.findByPortfolioId(portfolioId);
     }
 
-    public List<StockTransaction> getPortfolioTransactionsBySymbol(Integer portfolioId, Integer stockId) {
+    public List<StockTransaction> getPortfolioTransactionsByStockId(Integer portfolioId, Integer stockId) {
         return stockTransactionRepository.findByPortfolioIdAndStockId(portfolioId, stockId);
     }
 

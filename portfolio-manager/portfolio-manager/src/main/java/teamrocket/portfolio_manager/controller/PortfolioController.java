@@ -7,6 +7,7 @@ import teamrocket.portfolio_manager.entity.Portfolio;
 import teamrocket.portfolio_manager.entity.Stock;
 import teamrocket.portfolio_manager.entity.StockTransaction;
 import teamrocket.portfolio_manager.model.PortfolioNetworthDTO;
+import teamrocket.portfolio_manager.model.StockTransactionWithChangeDTO;
 import teamrocket.portfolio_manager.model.TransactionDTO;
 import teamrocket.portfolio_manager.service.PortfolioService;
 import teamrocket.portfolio_manager.service.StockService;
@@ -56,11 +57,11 @@ public class PortfolioController {
     }
     @GetMapping("/{portfolioId}/transactions")
     @ResponseStatus(HttpStatus.OK)
-    public List<StockTransaction> getStockTransactionsBySymbol(@PathVariable Integer portfolioId, @RequestParam(required = false) Integer stockId) {
+    public List<StockTransactionWithChangeDTO> getStockTransactionsByPortfolioId(@PathVariable Integer portfolioId, @RequestParam(required = false) Integer stockId) {
         if (stockId == null) {
-            return portfolioService.getPortfolioTransactions(portfolioId);
+            return portfolioService.getPortfolioTransactions(portfolioId).stream().map(StockTransaction::toDTO).toList();
         } else {
-            return portfolioService.getPortfolioTransactionsBySymbol(portfolioId, stockId);
+            return portfolioService.getPortfolioTransactionsByStockId(portfolioId, stockId).stream().map(StockTransaction::toDTO).toList();
         }
     }
     @GetMapping("/{portfolioId}/stocks")

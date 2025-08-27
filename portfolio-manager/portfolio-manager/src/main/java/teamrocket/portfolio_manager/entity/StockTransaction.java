@@ -3,6 +3,7 @@ package teamrocket.portfolio_manager.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import teamrocket.portfolio_manager.model.Action;
+import teamrocket.portfolio_manager.model.StockTransactionWithChangeDTO;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -63,5 +64,9 @@ public class StockTransaction {
 
     public Portfolio getPortfolio() {
         return portfolio;
+    }
+
+    public StockTransactionWithChangeDTO toDTO(){
+        return new StockTransactionWithChangeDTO(id, stock,date,amount,action,actionPrice);
     }
 }
