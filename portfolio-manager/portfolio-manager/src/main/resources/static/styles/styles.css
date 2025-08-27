@@ -47,13 +47,57 @@ button:hover {
   color: #fff;
 }
 
+.hamburger {
+    position: relative;
+}
+
+.dropdown {
+  display: none; /* Hidden by default */
+  position: absolute;
+  top: 2%;    /* immediately below hamburger */
+  left: 10;      /* align left edges */
+  z-index: 1000;
+  margin-top: 8px;
+  background: var(--button-bg);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 200px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown li {
+  font-weight: bold;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown li:hover {
+  background: var(--button-hover);
+}
+
+.dropdown li.new {
+  font-weight: bold;
+  color: white;
+}
+
 .icon {
   font-size: 1.5rem;
   cursor: pointer;
 }
 
+.app-title{
+    font-size: 2rem;
+    font-weight: 600;
+}
+
 .portfolio-name, .portfolio-date {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 

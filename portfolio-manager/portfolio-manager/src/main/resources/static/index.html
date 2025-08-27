@@ -12,6 +12,15 @@
 <!-- Header -->
 <header class="app-header">
     <div class="icon hamburger"><i class="fas fa-bars"></i></div>
+
+    <div class="dropdown" id="dropdownMenu">
+        <ul>
+            <li>Portfolio 1</li>
+            <li class="new">+ Create New Portfolio</li>
+        </ul>
+    </div>
+
+    <div class="app-title">Pocket Rocket</div>
     <div class="portfolio-name">My Portfolio</div>
     <div class="portfolio-date">2015-01-01</div>
     <div class="forward-button">
@@ -44,7 +53,7 @@
     <section class="portfolio">
         <div class="networth">
             <h1>Networth:</h1>
-            <span id="networth-change">%CHANGE</span>
+            <h1>Daily Change: <span id="networth-change">%CHANGE</span></h1>
         </div>
         <canvas id="portfolio-chart"></canvas>
         <div class="insights">

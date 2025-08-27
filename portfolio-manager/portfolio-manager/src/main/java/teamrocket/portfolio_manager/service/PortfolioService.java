@@ -211,6 +211,7 @@ public class PortfolioService {
     }
 
     public Portfolio createPortfolio(String name) {
+        name = name.replaceAll("^\"|\"$", "");
         Portfolio portfolio = new Portfolio(name, BigDecimal.ZERO);
         return portfolioRepository.save(portfolio);
     }

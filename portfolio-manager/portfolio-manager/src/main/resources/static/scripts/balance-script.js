@@ -1,7 +1,36 @@
 const base = "http://localhost:8080"
 
 document.querySelector('.hamburger').addEventListener('click', () => {
-  alert('Open portfolio selector or add new portfolio');
+    document.getElementById('dropdownMenu').style.display =
+        document.getElementById('dropdownMenu').style.display === 'block' ? 'none' : 'block';
+});
+
+document.addEventListener('click', (e) => {
+  if (!document.querySelector('.hamburger').contains(e.target) &&
+    !document.getElementById('dropdownMenu').contains(e.target)) {
+        document.getElementById('dropdownMenu').style.display = 'none';
+  }
+});
+
+document.getElementById('dropdownMenu').addEventListener('click', async (e) => {
+  if (e.target.tagName === 'LI') {
+    if (e.target.classList.contains('new')) {
+        const portfolio_name = prompt('Name of new portfolio');
+        await fetch(base + `/portfolios`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: portfolio_name
+        });
+        renderPage();
+    } else {
+        const id = e.target.textContent;
+        const idx = id.indexOf(":");
+        const beforeColon = idx !== -1 ? id.slice(0, idx) : id;
+        portfolioId = Number(beforeColon);
+        renderPage();
+    }
+    document.getElementById('dropdownMenu').style.display = 'none'; // close menu
+  }
 });
 
 const addModal = document.getElementById('addFundsModal');
@@ -69,7 +98,14 @@ renderPage();
 
 async function renderPage() {
     const portfolios = await fetchPortfolios();
-    const currentPortfolio = portfolios[portfolioId-1];
+    const currentPortfolio = portfolios.find(p => p.id === portfolioId);
+
+    const dropdownMenu = document.querySelector('#dropdownMenu ul');
+    dropdownMenu.innerHTML = '';
+    for (const p of portfolios) {
+        dropdownMenu.innerHTML += '<li>'+p.id+': '+p.name+'</li>';
+    }
+    dropdownMenu.innerHTML += '<li class="new">+ Create New Portfolio</li>'
 
     const pageTitle = document.querySelector('.portfolio-name');
     const pageDate = document.querySelector('.portfolio-date');

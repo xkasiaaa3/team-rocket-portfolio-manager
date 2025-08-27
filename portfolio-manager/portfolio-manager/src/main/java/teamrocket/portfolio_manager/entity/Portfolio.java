@@ -19,10 +19,7 @@ public class Portfolio {
     @GeneratedValue
     private Integer id;
     private String name;
-    @Positive
     private BigDecimal balance;
-//    @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-//    private List<StockTransaction> stockTransactions;
     @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PortfolioHistory> portfolioHistories;
 
@@ -43,10 +40,6 @@ public class Portfolio {
         calendar.setTime(currentPortfolioDate);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
-//        if (calendar.get(Calendar.DAY_OF_WEEK) > 5){
-//            calendar.add(Calendar.DAY_OF_MONTH, 1);
-//        }
-
         currentPortfolioDate = calendar.getTime();
 
         return currentPortfolioDate;
@@ -56,7 +49,7 @@ public class Portfolio {
     public Portfolio(String name, BigDecimal balance) {
         this.name = name;
         this.balance = balance;
-        this.currentPortfolioDate = Date.from(Instant.parse("2015-01-02T00:00:00Z"));
+        this.currentPortfolioDate = Date.from(Instant.parse("2015-02-02T00:00:00Z"));
     }
 
     public Integer getId() {
@@ -68,9 +61,6 @@ public class Portfolio {
     public BigDecimal getBalance() {
         return balance;
     }
-//    public List<StockTransaction> getStockTransactions() {
-//        return stockTransactions;
-//    }
     public List<PortfolioHistory> getPortfolioHistories() {
         return portfolioHistories;
     }
@@ -87,9 +77,6 @@ public class Portfolio {
     public void subtractBalance(BigDecimal amount) {
         this.balance = this.balance.subtract(amount);
     }
-//    public void setStockTransactions(List<StockTransaction> stockTransactions) {
-//        this.stockTransactions = stockTransactions;
-//    }
     public void setPortfolioHistories(List<PortfolioHistory> portfolioHistories) {
         this.portfolioHistories = portfolioHistories;
     }
