@@ -59,58 +59,6 @@ async function forwardDay() {
     })
 }
 
-document.getElementById('buyButton').addEventListener('click', async () => {
-    const amount = document.getElementById('quantity').value;
-    if (confirm(
-        "Are you sure you want to buy "+amount+" shares of "+currentStock.stockName+"?\n"+
-        "This will cost $"+amount*currentStock.currentPrice+"\n"+
-        "Your balance is currently $"+currentPortfolio.balance
-        )) {
-        const transactionDTO = {
-            stockId: currentStock.id,
-            amount: amount,
-            action: "BUYING"
-        };
-        await fetch(base + `/portfolios/${portfolioId}/transaction`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(transactionDTO)
-        })
-        document.getElementById('quantity').value = '';
-        modal.classList.add('hidden');
-        renderPage();
-    } else {
-        document.getElementById('quantity').value = '';
-        modal.classList.add('hidden');
-    }
-});
-
-document.getElementById('sellButton').addEventListener('click', async () => {
-    const amount = document.getElementById('quantity').value;
-    if (confirm(
-        "Are you sure you want to sell "+amount+" shares of "+currentStock.stockName+"?\n"+
-        "This will add $"+amount*currentStock.currentPrice+" to your balance\n"+
-        "Your balance is currently $"+currentPortfolio.balance
-        )) {
-        const transactionDTO = {
-            stockId: currentStock.id,
-            amount: document.getElementById('quantity').value,
-            action: "SELLING"
-        };
-        await fetch(base + `/portfolios/${portfolioId}/transaction`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(transactionDTO)
-        })
-        document.getElementById('quantity').value = '';
-        modal.classList.add('hidden');
-        renderPage();
-    } else {
-        document.getElementById('quantity').value = '';
-        modal.classList.add('hidden');
-    }
-});
-
 let portfolioId = 1;
 let currentPortfolio;
 
@@ -143,6 +91,62 @@ loadStocks();
 
 searchBar.addEventListener("input", async () => sortStocks());
 sortOrder.addEventListener("change", async () => sortStocks());
+
+document.getElementById('buyButton').addEventListener('click', async () => {
+    const portfolios = await fetchPortfolios();
+    const currentPortfolio = portfolios.find(p => p.id === portfolioId);
+    const amount = document.getElementById('quantity').value;
+    if (confirm(
+        "Are you sure you want to buy "+amount+" shares of "+currentStock.stockName+"?\n"+
+        "This will cost $"+amount*currentStock.currentPrice+"\n"+
+        "Your balance is currently $"+currentPortfolio.balance
+        )) {
+        const transactionDTO = {
+            stockId: currentStock.id,
+            amount: amount,
+            action: "BUYING"
+        };
+        await fetch(base + `/portfolios/${portfolioId}/transaction`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(transactionDTO)
+        })
+        document.getElementById('quantity').value = '';
+        modal.classList.add('hidden');
+        renderPage();
+    } else {
+        document.getElementById('quantity').value = '';
+        modal.classList.add('hidden');
+    }
+});
+
+document.getElementById('sellButton').addEventListener('click', async () => {
+    const portfolios = await fetchPortfolios();
+    const currentPortfolio = portfolios.find(p => p.id === portfolioId);
+    const amount = document.getElementById('quantity').value;
+    if (confirm(
+        "Are you sure you want to sell "+amount+" shares of "+currentStock.stockName+"?\n"+
+        "This will add $"+amount*currentStock.currentPrice+" to your balance\n"+
+        "Your balance is currently $"+currentPortfolio.balance
+        )) {
+        const transactionDTO = {
+            stockId: currentStock.id,
+            amount: document.getElementById('quantity').value,
+            action: "SELLING"
+        };
+        await fetch(base + `/portfolios/${portfolioId}/transaction`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(transactionDTO)
+        })
+        document.getElementById('quantity').value = '';
+        modal.classList.add('hidden');
+        renderPage();
+    } else {
+        document.getElementById('quantity').value = '';
+        modal.classList.add('hidden');
+    }
+});
 
 async function renderPage() {
     const portfolios = await fetchPortfolios();

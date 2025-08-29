@@ -60,6 +60,8 @@ async function forwardDay() {
 }
 
 document.getElementById('buyButton').addEventListener('click', async () => {
+    const portfolios = await fetchPortfolios();
+    const currentPortfolio = portfolios.find(p => p.id === portfolioId);
     const amount = document.getElementById('quantity').value;
     if (confirm(
         "Are you sure you want to buy "+amount+" shares of "+currentStock.stockName+"?\n"+
@@ -86,6 +88,8 @@ document.getElementById('buyButton').addEventListener('click', async () => {
 });
 
 document.getElementById('sellButton').addEventListener('click', async () => {
+    const portfolios = await fetchPortfolios();
+    const currentPortfolio = portfolios.find(p => p.id === portfolioId);
     const amount = document.getElementById('quantity').value;
     if (confirm(
         "Are you sure you want to sell "+amount+" shares of "+currentStock.stockName+"?\n"+
